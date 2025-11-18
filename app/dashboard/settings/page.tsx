@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter, useSearchParams } from 'next/navigation'
 
@@ -12,7 +12,7 @@ interface PaymentConnection {
   created_at: string
 }
 
-export default function SettingsPage() {
+function SettingsContent() {
   const [connections, setConnections] = useState<PaymentConnection[]>([])
   const [loading, setLoading] = useState(true)
   const router = useRouter()
@@ -212,5 +212,13 @@ export default function SettingsPage() {
         </div>
       </main>
     </div>
+  )
+}
+
+export default function SettingsPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div></div>}>
+      <SettingsContent />
+    </Suspense>
   )
 }
