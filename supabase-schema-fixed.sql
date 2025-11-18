@@ -14,28 +14,18 @@ CREATE TABLE IF NOT EXISTS profiles (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Enable Row Level Security
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 
--- Profiles policies
-CREATE POLICY "Users can view their own profile"
-  ON profiles FOR SELECT
-  USING (auth.uid() = id);
-
-CREATE POLICY "Users can update their own profile"
-  ON profiles FOR UPDATE
-  USING (auth.uid() = id);
-
-CREATE POLICY "Users can insert their own profile"
-  ON profiles FOR INSERT
-  WITH CHECK (auth.uid() = id);
+CREATE POLICY "Users can view their own profile" ON profiles FOR SELECT USING (auth.uid() = id);
+CREATE POLICY "Users can update their own profile" ON profiles FOR UPDATE USING (auth.uid() = id);
+CREATE POLICY "Users can insert their own profile" ON profiles FOR INSERT WITH CHECK (auth.uid() = id);
 
 -- API Keys table (for JavaScript SDK authentication)
 CREATE TABLE IF NOT EXISTS api_keys (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
-  key_prefix TEXT NOT NULL, -- First 8 chars (sk_live_abc12345...)
-  key_hash TEXT NOT NULL UNIQUE, -- SHA256 hash of full key
+  key_prefix TEXT NOT NULL,
+  key_hash TEXT NOT NULL UNIQUE,
   name TEXT DEFAULT 'Default Key',
   last_used_at TIMESTAMP WITH TIME ZONE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
@@ -43,25 +33,12 @@ CREATE TABLE IF NOT EXISTS api_keys (
   UNIQUE(user_id, key_prefix)
 );
 
--- Enable Row Level Security
 ALTER TABLE api_keys ENABLE ROW LEVEL SECURITY;
 
--- API Keys policies
-CREATE POLICY "Users can view their own API keys"
-  ON api_keys FOR SELECT
-  USING (auth.uid() = user_id);
-
-CREATE POLICY "Users can create their own API keys"
-  ON api_keys FOR INSERT
-  WITH CHECK (auth.uid() = user_id);
-
-CREATE POLICY "Users can update their own API keys"
-  ON api_keys FOR UPDATE
-  USING (auth.uid() = user_id);
-
-CREATE POLICY "Users can delete their own API keys"
-  ON api_keys FOR DELETE
-  USING (auth.uid() = user_id);
+CREATE POLICY "Users can view their own API keys" ON api_keys FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "Users can create their own API keys" ON api_keys FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "Users can update their own API keys" ON api_keys FOR UPDATE USING (auth.uid() = user_id);
+CREATE POLICY "Users can delete their own API keys" ON api_keys FOR DELETE USING (auth.uid() = user_id);
 
 -- Tracking Links table
 CREATE TABLE IF NOT EXISTS tracking_links (
@@ -83,34 +60,21 @@ CREATE TABLE IF NOT EXISTS tracking_links (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Enable Row Level Security
 ALTER TABLE tracking_links ENABLE ROW LEVEL SECURITY;
 
--- Tracking Links policies
-CREATE POLICY "Users can view their own tracking links"
-  ON tracking_links FOR SELECT
-  USING (auth.uid() = user_id);
+CREATE POLICY "Users can view their own tracking links" ON tracking_links FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "Users can create their own tracking links" ON tracking_links FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "Users can update their own tracking links" ON tracking_links FOR UPDATE USING (auth.uid() = user_id);
+CREATE POLICY "Users can delete their own tracking links" ON tracking_links FOR DELETE USING (auth.uid() = user_id);
 
-CREATE POLICY "Users can create their own tracking links"
-  ON tracking_links FOR INSERT
-  WITH CHECK (auth.uid() = user_id);
-
-CREATE POLICY "Users can update their own tracking links"
-  ON tracking_links FOR UPDATE
-  USING (auth.uid() = user_id);
-
-CREATE POLICY "Users can delete their own tracking links"
-  ON tracking_links FOR DELETE
-  USING (auth.uid() = user_id);
-
--- Payment Connections table (for multi-tenant payment processor connections)
+-- Payment Connections table
 CREATE TABLE IF NOT EXISTS payment_connections (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
   provider TEXT NOT NULL CHECK (provider IN ('stripe', 'shopify', 'paypal', 'square')),
   account_id TEXT NOT NULL,
-  access_token TEXT, -- Encrypted
-  refresh_token TEXT, -- Encrypted
+  access_token TEXT,
+  refresh_token TEXT,
   scope TEXT,
   token_type TEXT,
   expires_at TIMESTAMP WITH TIME ZONE,
@@ -121,28 +85,14 @@ CREATE TABLE IF NOT EXISTS payment_connections (
   UNIQUE(user_id, provider, account_id)
 );
 
--- Enable Row Level Security
 ALTER TABLE payment_connections ENABLE ROW LEVEL SECURITY;
 
--- Payment Connections policies
-CREATE POLICY "Users can view their own payment connections"
-  ON payment_connections FOR SELECT
-  USING (auth.uid() = user_id);
+CREATE POLICY "Users can view their own payment connections" ON payment_connections FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "Users can create their own payment connections" ON payment_connections FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "Users can update their own payment connections" ON payment_connections FOR UPDATE USING (auth.uid() = user_id);
+CREATE POLICY "Users can delete their own payment connections" ON payment_connections FOR DELETE USING (auth.uid() = user_id);
 
-CREATE POLICY "Users can create their own payment connections"
-  ON payment_connections FOR INSERT
-  WITH CHECK (auth.uid() = user_id);
-
-CREATE POLICY "Users can update their own payment connections"
-  ON payment_connections FOR UPDATE
-  USING (auth.uid() = user_id);
-
-CREATE POLICY "Users can delete their own payment connections"
-  ON payment_connections FOR DELETE
-  USING (auth.uid() = user_id);
-
--- Revenue Entries table (updated with payment processor fields)
--- NOTE: Must be created BEFORE webhook_logs since webhook_logs references it
+-- Revenue Entries table
 CREATE TABLE IF NOT EXISTS revenue_entries (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
@@ -162,28 +112,14 @@ CREATE TABLE IF NOT EXISTS revenue_entries (
   UNIQUE(shopify_order_id)
 );
 
--- Enable Row Level Security
 ALTER TABLE revenue_entries ENABLE ROW LEVEL SECURITY;
 
--- Revenue Entries policies
-CREATE POLICY "Users can view their own revenue entries"
-  ON revenue_entries FOR SELECT
-  USING (auth.uid() = user_id);
+CREATE POLICY "Users can view their own revenue entries" ON revenue_entries FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "Users can create their own revenue entries" ON revenue_entries FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "Users can update their own revenue entries" ON revenue_entries FOR UPDATE USING (auth.uid() = user_id);
+CREATE POLICY "Users can delete their own revenue entries" ON revenue_entries FOR DELETE USING (auth.uid() = user_id);
 
-CREATE POLICY "Users can create their own revenue entries"
-  ON revenue_entries FOR INSERT
-  WITH CHECK (auth.uid() = user_id);
-
-CREATE POLICY "Users can update their own revenue entries"
-  ON revenue_entries FOR UPDATE
-  USING (auth.uid() = user_id);
-
-CREATE POLICY "Users can delete their own revenue entries"
-  ON revenue_entries FOR DELETE
-  USING (auth.uid() = user_id);
-
--- Webhook Logs table (for debugging and monitoring)
--- NOTE: Created AFTER revenue_entries since it references that table
+-- Webhook Logs table
 CREATE TABLE IF NOT EXISTS webhook_logs (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   connection_id UUID REFERENCES payment_connections(id) ON DELETE CASCADE,
@@ -198,19 +134,13 @@ CREATE TABLE IF NOT EXISTS webhook_logs (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Enable Row Level Security
 ALTER TABLE webhook_logs ENABLE ROW LEVEL SECURITY;
 
--- Webhook Logs policies (users can view logs for their connections)
-CREATE POLICY "Users can view their own webhook logs"
-  ON webhook_logs FOR SELECT
-  USING (
-    EXISTS (
-      SELECT 1 FROM payment_connections
-      WHERE payment_connections.id = webhook_logs.connection_id
-      AND payment_connections.user_id = auth.uid()
-    )
-  );
+CREATE POLICY "Users can view their own webhook logs" ON webhook_logs FOR SELECT USING (
+  EXISTS (
+    SELECT 1 FROM payment_connections pc WHERE pc.id = webhook_logs.connection_id AND pc.user_id = auth.uid()
+  )
+);
 
 -- Function to update tracking_links total_revenue
 CREATE OR REPLACE FUNCTION update_tracking_link_revenue()
@@ -224,12 +154,10 @@ BEGIN
   ),
   updated_at = NOW()
   WHERE id = NEW.tracking_link_id;
-
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
--- Trigger to update total_revenue when revenue_entry is added/updated
 CREATE TRIGGER update_link_revenue_on_insert
   AFTER INSERT ON revenue_entries
   FOR EACH ROW
@@ -252,12 +180,10 @@ BEGIN
   ),
   updated_at = NOW()
   WHERE id = OLD.tracking_link_id;
-
   RETURN OLD;
 END;
 $$ LANGUAGE plpgsql;
 
--- Trigger to update total_revenue when revenue_entry is deleted
 CREATE TRIGGER update_link_revenue_on_delete
   AFTER DELETE ON revenue_entries
   FOR EACH ROW
@@ -271,16 +197,13 @@ DECLARE
   key_hash TEXT;
   key_prefix TEXT;
 BEGIN
-  -- Create profile
   INSERT INTO profiles (id, email, full_name)
   VALUES (NEW.id, NEW.email, NEW.raw_user_meta_data->>'full_name');
 
-  -- Generate API key (sk_live_ + 32 random characters)
   api_key := 'sk_live_' || encode(gen_random_bytes(24), 'hex');
-  key_prefix := substring(api_key from 1 for 16); -- First 16 chars for display
-  key_hash := encode(digest(api_key, 'sha256'), 'hex'); -- Hash for storage
+  key_prefix := substring(api_key from 1 for 16);
+  key_hash := encode(digest(api_key, 'sha256'), 'hex');
 
-  -- Store API key (hashed)
   INSERT INTO api_keys (user_id, key_prefix, key_hash, name)
   VALUES (NEW.id, key_prefix, key_hash, 'Default Key');
 
@@ -288,14 +211,13 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
--- Trigger to create profile on signup
 DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW
   EXECUTE FUNCTION handle_new_user();
 
--- Create indexes for better performance
+-- Create indexes
 CREATE INDEX IF NOT EXISTS idx_api_keys_user_id ON api_keys(user_id);
 CREATE INDEX IF NOT EXISTS idx_api_keys_key_hash ON api_keys(key_hash);
 CREATE INDEX IF NOT EXISTS idx_tracking_links_user_id ON tracking_links(user_id);
