@@ -4,7 +4,7 @@ import Stripe from 'stripe'
 import { encrypt } from '@/lib/encryption'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-11-20.acacia',
+  apiVersion: '2023-10-16',
 })
 
 /**
@@ -114,7 +114,7 @@ export async function GET(request: Request) {
  */
 async function setupStripeWebhook(accountId: string, accessToken: string) {
   const stripe = new Stripe(accessToken, {
-    apiVersion: '2024-11-20.acacia',
+    apiVersion: '2023-10-16',
   })
 
   const webhookUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/webhooks/stripe`
