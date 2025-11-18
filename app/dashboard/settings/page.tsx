@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 
+// Settings page - payment processor connections
 interface PaymentConnection {
   id: string
   provider: string
