@@ -56,6 +56,10 @@ export async function GET(request: Request) {
       scope,
     } = response
 
+    if (!access_token || !stripe_user_id) {
+      throw new Error('Missing access token or account ID from Stripe')
+    }
+
     // Encrypt tokens before storing
     const encryptedAccessToken = encrypt(access_token)
     const encryptedRefreshToken = refresh_token ? encrypt(refresh_token) : null
