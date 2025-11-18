@@ -1,11 +1,8 @@
 'use client'
 
-import { Suspense, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { useRouter, useSearchParams } from 'next/navigation'
-
-// Force dynamic rendering to avoid static generation issues with useSearchParams
-export const dynamic = 'force-dynamic'
+import { useRouter } from 'next/navigation'
 
 interface PaymentConnection {
   id: string
@@ -15,16 +12,22 @@ interface PaymentConnection {
   created_at: string
 }
 
-function SettingsContent() {
+export default function SettingsPage() {
   const [connections, setConnections] = useState<PaymentConnection[]>([])
   const [loading, setLoading] = useState(true)
+  const [connected, setConnected] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
   const router = useRouter()
-  const searchParams = useSearchParams()
   const supabase = createClient()
 
-  // Check for connection success/error messages
-  const connected = searchParams.get('connected')
-  const error = searchParams.get('error')
+  // Read search params client-side only (after mount)
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search)
+      setConnected(params.get('connected'))
+      setError(params.get('error'))
+    }
+  }, [])
 
   useEffect(() => {
     fetchConnections()
@@ -215,13 +218,5 @@ function SettingsContent() {
         </div>
       </main>
     </div>
-  )
-}
-
-export default function SettingsPage() {
-  return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div></div>}>
-      <SettingsContent />
-    </Suspense>
   )
 }
