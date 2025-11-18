@@ -150,9 +150,10 @@ async function handleCheckoutSessionCompleted(
   const supabase = await createClient()
 
   // Extract UTM parameters from metadata
+  const campaignId = session.metadata?.campaign_id
   const utmSource = session.metadata?.utm_source
   const utmMedium = session.metadata?.utm_medium
-  const utmCampaign = session.metadata?.utm_campaign
+  const utmCampaign = session.metadata?.utm_campaign || campaignId
   const utmContent = session.metadata?.utm_content
 
   // Find matching tracking link
