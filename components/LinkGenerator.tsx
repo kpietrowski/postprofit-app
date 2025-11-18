@@ -78,7 +78,10 @@ export default function LinkGenerator({ onLinkCreated }: LinkGeneratorProps) {
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
-      <h2 className="text-2xl font-bold text-gray-900 mb-4">Create Tracking Link</h2>
+      <h2 className="text-2xl font-bold text-gray-900 mb-2">Create Campaign Link</h2>
+      <p className="text-gray-600 mb-4 text-sm">
+        Add your website and video details to generate a tracking link for ManyChat or boosted posts
+      </p>
 
       {error && (
         <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg">
@@ -88,14 +91,15 @@ export default function LinkGenerator({ onLinkCreated }: LinkGeneratorProps) {
 
       {success && generatedLink && (
         <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg">
-          <p className="text-green-800 font-semibold mb-2">Link created successfully!</p>
+          <p className="text-green-800 font-semibold mb-2">🎉 Campaign link created!</p>
+          <p className="text-sm text-gray-700 mb-3">Use this link in your ManyChat auto-replies or boosted post buttons:</p>
           <div className="bg-white p-3 rounded border border-green-300 break-all">
-            <p className="text-sm text-gray-700 mb-2">{generatedLink.full_tracking_url}</p>
+            <p className="text-sm font-mono text-gray-700 mb-2">{generatedLink.full_tracking_url}</p>
             <button
               onClick={() => copyToClipboard(generatedLink.full_tracking_url)}
               className="px-4 py-2 bg-green-600 text-white text-sm font-semibold rounded hover:bg-green-700 transition"
             >
-              Copy Link
+              📋 Copy Link
             </button>
           </div>
         </div>
@@ -140,7 +144,7 @@ export default function LinkGenerator({ onLinkCreated }: LinkGeneratorProps) {
 
         <div>
           <label htmlFor="destinationUrl" className="block text-sm font-medium text-gray-700 mb-1">
-            Destination URL *
+            Your Website URL *
           </label>
           <input
             id="destinationUrl"
@@ -149,8 +153,11 @@ export default function LinkGenerator({ onLinkCreated }: LinkGeneratorProps) {
             onChange={(e) => setDestinationUrl(e.target.value)}
             required
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent"
-            placeholder="https://yoursite.com/product"
+            placeholder="https://weddings.chatoptimized.io"
           />
+          <p className="mt-1 text-xs text-gray-500">
+            This must be YOUR domain where you have the tracking snippet installed
+          </p>
         </div>
 
         <div className="border-t pt-4">
