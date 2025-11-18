@@ -70,16 +70,91 @@ CREATE POLICY "Users can delete their own tracking links"
   ON tracking_links FOR DELETE
   USING (auth.uid() = user_id);
 
--- Revenue Entries table
+-- Payment Connections table (for multi-tenant payment processor connections)
+CREATE TABLE IF NOT EXISTS payment_connections (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
+  provider TEXT NOT NULL CHECK (provider IN ('stripe', 'shopify', 'paypal', 'square')),
+  account_id TEXT NOT NULL,
+  access_token TEXT, -- Encrypted
+  refresh_token TEXT, -- Encrypted
+  scope TEXT,
+  token_type TEXT,
+  expires_at TIMESTAMP WITH TIME ZONE,
+  status TEXT DEFAULT 'active' CHECK (status IN ('active', 'inactive', 'error')),
+  metadata JSONB DEFAULT '{}',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  UNIQUE(user_id, provider, account_id)
+);
+
+-- Enable Row Level Security
+ALTER TABLE payment_connections ENABLE ROW LEVEL SECURITY;
+
+-- Payment Connections policies
+CREATE POLICY "Users can view their own payment connections"
+  ON payment_connections FOR SELECT
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can create their own payment connections"
+  ON payment_connections FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update their own payment connections"
+  ON payment_connections FOR UPDATE
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete their own payment connections"
+  ON payment_connections FOR DELETE
+  USING (auth.uid() = user_id);
+
+-- Webhook Logs table (for debugging and monitoring)
+CREATE TABLE IF NOT EXISTS webhook_logs (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  connection_id UUID REFERENCES payment_connections(id) ON DELETE CASCADE,
+  provider TEXT NOT NULL,
+  event_type TEXT NOT NULL,
+  event_id TEXT,
+  payload JSONB,
+  status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'processed', 'failed', 'ignored')),
+  error_message TEXT,
+  revenue_entry_id UUID REFERENCES revenue_entries(id),
+  processed_at TIMESTAMP WITH TIME ZONE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Enable Row Level Security
+ALTER TABLE webhook_logs ENABLE ROW LEVEL SECURITY;
+
+-- Webhook Logs policies (users can view logs for their connections)
+CREATE POLICY "Users can view their own webhook logs"
+  ON webhook_logs FOR SELECT
+  USING (
+    EXISTS (
+      SELECT 1 FROM payment_connections
+      WHERE payment_connections.id = webhook_logs.connection_id
+      AND payment_connections.user_id = auth.uid()
+    )
+  );
+
+-- Revenue Entries table (updated with payment processor fields)
 CREATE TABLE IF NOT EXISTS revenue_entries (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
   tracking_link_id UUID REFERENCES tracking_links(id) ON DELETE CASCADE NOT NULL,
   amount DECIMAL(10, 2) NOT NULL CHECK (amount >= 0),
   description TEXT,
+  source TEXT DEFAULT 'manual' CHECK (source IN ('manual', 'automatic')),
+  processor TEXT CHECK (processor IN ('stripe', 'shopify', 'paypal', 'square', 'manual')),
+  stripe_payment_id TEXT,
+  shopify_order_id TEXT,
+  paypal_transaction_id TEXT,
+  payment_connection_id UUID REFERENCES payment_connections(id) ON DELETE SET NULL,
   entry_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  UNIQUE(stripe_payment_id),
+  UNIQUE(shopify_order_id)
 );
 
 -- Enable Row Level Security
@@ -176,3 +251,13 @@ CREATE INDEX IF NOT EXISTS idx_tracking_links_created_at ON tracking_links(creat
 CREATE INDEX IF NOT EXISTS idx_revenue_entries_user_id ON revenue_entries(user_id);
 CREATE INDEX IF NOT EXISTS idx_revenue_entries_tracking_link_id ON revenue_entries(tracking_link_id);
 CREATE INDEX IF NOT EXISTS idx_revenue_entries_entry_date ON revenue_entries(entry_date DESC);
+CREATE INDEX IF NOT EXISTS idx_revenue_entries_stripe_payment_id ON revenue_entries(stripe_payment_id);
+CREATE INDEX IF NOT EXISTS idx_revenue_entries_shopify_order_id ON revenue_entries(shopify_order_id);
+CREATE INDEX IF NOT EXISTS idx_revenue_entries_source ON revenue_entries(source);
+CREATE INDEX IF NOT EXISTS idx_payment_connections_user_id ON payment_connections(user_id);
+CREATE INDEX IF NOT EXISTS idx_payment_connections_provider ON payment_connections(provider);
+CREATE INDEX IF NOT EXISTS idx_payment_connections_status ON payment_connections(status);
+CREATE INDEX IF NOT EXISTS idx_webhook_logs_connection_id ON webhook_logs(connection_id);
+CREATE INDEX IF NOT EXISTS idx_webhook_logs_status ON webhook_logs(status);
+CREATE INDEX IF NOT EXISTS idx_webhook_logs_created_at ON webhook_logs(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_webhook_logs_event_id ON webhook_logs(event_id);
