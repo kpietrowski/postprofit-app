@@ -68,7 +68,7 @@ export default function DashboardPage() {
         <div className="max-w-[1400px] mx-auto px-8 py-6">
           <div className="flex justify-between items-center">
             <div className={`transition-all duration-700 ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}>
-              <h1 className="text-3xl font-['DM_Serif_Display'] text-transparent bg-clip-text bg-gradient-to-r from-orange-600 via-rose-600 to-orange-600">
+              <h1 className="text-3xl font-['DM_Serif_Display'] text-slate-900">
                 PostProfit
               </h1>
               <p className="text-stone-600 text-sm font-['Plus_Jakarta_Sans'] mt-1">Revenue Attribution Platform</p>

@@ -104,7 +104,7 @@ export default function LinksList() {
       <div className="relative bg-white/70 backdrop-blur-xl border border-orange-200 rounded-2xl p-8 hover:border-orange-300 hover:shadow-lg transition-all duration-300">
         <div className="flex items-center gap-2 mb-6">
           <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
-          <h2 className="text-2xl font-serif text-stone-800">Your Campaigns</h2>
+          <h2 className="text-2xl font-serif text-slate-900">Your Campaigns</h2>
         </div>
 
         {links.length === 0 ? (
@@ -126,7 +126,7 @@ export default function LinksList() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-3 mb-3 flex-wrap">
                       <span className="text-2xl flex-shrink-0">{getPlatformIcon(link.platform)}</span>
-                      <h3 className="text-lg font-serif text-stone-800 group-hover/item:text-orange-700 transition-colors truncate">{link.title}</h3>
+                      <h3 className="text-lg font-serif text-slate-900 group-hover/item:text-orange-700 transition-colors truncate">{link.title}</h3>
                       <span
                         className={`px-3 py-1 text-xs font-sans font-semibold rounded-lg border ${getPlatformColor(link.platform)} capitalize flex-shrink-0`}
                       >
@@ -135,19 +135,19 @@ export default function LinksList() {
                     </div>
 
                     <div className="bg-orange-50/50 p-3 rounded-lg border border-orange-100 mb-4">
-                      <p className="text-sm text-stone-700 font-mono break-all">{link.full_tracking_url}</p>
+                      <p className="text-sm text-slate-900 font-mono break-all">{link.full_tracking_url}</p>
                     </div>
 
                     <div className="flex flex-wrap gap-6 text-sm">
                       <div>
                         <span className="text-stone-500 font-sans">Revenue: </span>
-                        <span className="font-sans font-bold text-orange-600">
+                        <span className="font-sans font-bold text-slate-900">
                           ${parseFloat(link.total_revenue.toString()).toFixed(2)}
                         </span>
                       </div>
                       <div>
                         <span className="text-stone-500 font-sans">Created: </span>
-                        <span className="font-sans font-semibold text-stone-700">
+                        <span className="font-sans font-semibold text-slate-900">
                           {new Date(link.created_at).toLocaleDateString()}
                         </span>
                       </div>

@@ -82,7 +82,7 @@ export default function LinkGenerator({ onLinkCreated }: LinkGeneratorProps) {
       <div className="relative bg-white/80 backdrop-blur-xl border border-orange-200 rounded-2xl p-8 hover:border-orange-300 hover:shadow-lg transition-all duration-300 h-full">
         <div className="flex items-center gap-2 mb-2">
           <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
-          <h2 className="text-2xl font-serif text-stone-800">Create Campaign Link</h2>
+          <h2 className="text-2xl font-serif text-slate-900">Create Campaign Link</h2>
         </div>
         <p className="text-stone-600 font-sans text-sm mb-6">
           Generate tracking links for ManyChat auto-replies or boosted posts
@@ -100,7 +100,7 @@ export default function LinkGenerator({ onLinkCreated }: LinkGeneratorProps) {
             <p className="text-green-700 font-sans font-semibold mb-2 relative">Campaign link created!</p>
             <p className="text-sm text-stone-600 font-sans mb-3 relative">Use this link in your social media:</p>
             <div className="bg-white p-4 rounded-lg border border-green-200 break-all relative">
-              <p className="text-sm font-mono text-stone-700 mb-3">{generatedLink.full_tracking_url}</p>
+              <p className="text-sm font-mono text-slate-900 mb-3">{generatedLink.full_tracking_url}</p>
               <button
                 onClick={() => copyToClipboard(generatedLink.full_tracking_url)}
                 className="px-4 py-2 bg-gradient-to-r from-orange-500 to-rose-500 text-white font-sans font-semibold rounded-lg hover:shadow-lg hover:shadow-orange-500/30 transition-all duration-300 hover:scale-105"
@@ -123,7 +123,7 @@ export default function LinkGenerator({ onLinkCreated }: LinkGeneratorProps) {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 required
-                className="w-full px-4 py-3 bg-white border border-orange-200 rounded-lg font-sans text-stone-800 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 transition-all"
+                className="w-full px-4 py-3 bg-white border border-orange-200 rounded-lg font-sans text-slate-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 transition-all"
                 placeholder="Morning Routine Video"
               />
             </div>
@@ -167,7 +167,7 @@ export default function LinkGenerator({ onLinkCreated }: LinkGeneratorProps) {
           </div>
 
           <div className="border-t border-orange-200 pt-5">
-            <h3 className="text-lg font-serif text-stone-800 mb-4">UTM Parameters <span className="text-stone-500 text-sm font-sans">(Optional)</span></h3>
+            <h3 className="text-lg font-serif text-slate-900 mb-4">UTM Parameters <span className="text-stone-500 text-sm font-sans">(Optional)</span></h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
@@ -179,7 +179,7 @@ export default function LinkGenerator({ onLinkCreated }: LinkGeneratorProps) {
                   type="text"
                   value={utmSource}
                   onChange={(e) => setUtmSource(e.target.value)}
-                  className="w-full px-4 py-3 bg-white border border-orange-200 rounded-lg font-sans text-stone-800 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 transition-all"
+                  className="w-full px-4 py-3 bg-white border border-orange-200 rounded-lg font-sans text-slate-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 transition-all"
                   placeholder="Auto-filled from platform"
                 />
               </div>
@@ -193,7 +193,7 @@ export default function LinkGenerator({ onLinkCreated }: LinkGeneratorProps) {
                   type="text"
                   value={utmMedium}
                   onChange={(e) => setUtmMedium(e.target.value)}
-                  className="w-full px-4 py-3 bg-white border border-orange-200 rounded-lg font-sans text-stone-800 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 transition-all"
+                  className="w-full px-4 py-3 bg-white border border-orange-200 rounded-lg font-sans text-slate-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 transition-all"
                   placeholder="social"
                 />
               </div>
@@ -207,7 +207,7 @@ export default function LinkGenerator({ onLinkCreated }: LinkGeneratorProps) {
                   type="text"
                   value={utmCampaign}
                   onChange={(e) => setUtmCampaign(e.target.value)}
-                  className="w-full px-4 py-3 bg-white border border-orange-200 rounded-lg font-sans text-stone-800 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 transition-all"
+                  className="w-full px-4 py-3 bg-white border border-orange-200 rounded-lg font-sans text-slate-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 transition-all"
                   placeholder="Auto-filled from title"
                 />
               </div>
@@ -221,7 +221,7 @@ export default function LinkGenerator({ onLinkCreated }: LinkGeneratorProps) {
                   type="text"
                   value={utmContent}
                   onChange={(e) => setUtmContent(e.target.value)}
-                  className="w-full px-4 py-3 bg-white border border-orange-200 rounded-lg font-sans text-stone-800 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 transition-all"
+                  className="w-full px-4 py-3 bg-white border border-orange-200 rounded-lg font-sans text-slate-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 transition-all"
                   placeholder="Optional"
                 />
               </div>

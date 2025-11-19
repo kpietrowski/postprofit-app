@@ -69,7 +69,7 @@ export default function Analytics() {
           <div className="absolute inset-0 bg-gradient-to-r from-orange-200/40 to-rose-200/40 rounded-2xl blur-xl"></div>
           <div className="relative bg-white/90 backdrop-blur-xl border border-orange-200 rounded-2xl p-8 hover:border-orange-300 hover:shadow-lg transition-all duration-300">
             <p className="text-sm font-sans font-semibold text-orange-600 mb-2 tracking-wider uppercase">Total Revenue</p>
-            <p className="text-6xl font-serif text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-rose-600 mb-2">
+            <p className="text-6xl font-serif text-slate-900 mb-2">
               ${totalRevenue.toFixed(2)}
             </p>
             <p className="text-stone-500 font-sans text-sm">from {links.length} campaigns</p>
@@ -81,7 +81,7 @@ export default function Analytics() {
           <div className="absolute inset-0 bg-rose-200/30 rounded-2xl blur-lg"></div>
           <div className="relative bg-white/90 backdrop-blur-xl border border-orange-200 rounded-2xl p-8 hover:border-rose-300 hover:shadow-lg transition-all duration-300">
             <p className="text-sm font-sans font-semibold text-rose-600 mb-2 tracking-wider uppercase">Active Links</p>
-            <p className="text-5xl font-serif text-rose-600 mb-2">{links.length}</p>
+            <p className="text-5xl font-serif text-slate-900 mb-2">{links.length}</p>
             <p className="text-stone-500 font-sans text-sm">campaigns</p>
           </div>
         </div>
@@ -100,9 +100,9 @@ export default function Analytics() {
               </div>
               {topPerformer ? (
                 <>
-                  <p className="text-2xl font-serif text-stone-800 mb-2 truncate">{topPerformer.title}</p>
+                  <p className="text-2xl font-serif text-slate-900 mb-2 truncate">{topPerformer.title}</p>
                   <div className="flex items-baseline gap-2">
-                    <p className="text-3xl font-sans font-bold text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-rose-600">
+                    <p className="text-3xl font-sans font-bold text-slate-900">
                       ${parseFloat(topPerformer.total_revenue.toString()).toFixed(2)}
                     </p>
                     <p className="text-stone-500 font-sans text-sm capitalize">{topPerformer.platform}</p>
@@ -128,11 +128,11 @@ export default function Analytics() {
                         <span className="text-orange-600 font-sans font-bold text-sm">{index + 1}</span>
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="font-sans font-medium text-stone-800 truncate group-hover:text-orange-700 transition-colors">{link.title}</p>
+                        <p className="font-sans font-medium text-slate-900 truncate group-hover:text-orange-700 transition-colors">{link.title}</p>
                         <p className="text-xs text-stone-500 capitalize">{link.platform}</p>
                       </div>
                       <div className="text-right flex-shrink-0">
-                        <p className="text-lg font-sans font-bold text-orange-600">
+                        <p className="text-lg font-sans font-bold text-slate-900">
                           ${parseFloat(link.total_revenue.toString()).toFixed(2)}
                         </p>
                       </div>

@@ -83,7 +83,7 @@ export default function RevenueTracker({ onRevenueAdded }: RevenueTrackerProps) 
       <div className="relative bg-white/80 backdrop-blur-xl border border-orange-200 rounded-2xl p-8 hover:border-rose-300 hover:shadow-lg transition-all duration-300 h-full flex flex-col">
         <div className="flex items-center gap-2 mb-6">
           <div className="w-2 h-2 bg-rose-500 rounded-full"></div>
-          <h2 className="text-2xl font-serif text-stone-800">Track Revenue</h2>
+          <h2 className="text-2xl font-serif text-slate-900">Track Revenue</h2>
         </div>
 
         {error && (
@@ -140,7 +140,7 @@ export default function RevenueTracker({ onRevenueAdded }: RevenueTrackerProps) 
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 required
-                className="w-full px-4 py-3 bg-white border border-orange-200 rounded-lg font-sans text-stone-800 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-rose-400 focus:border-rose-400 transition-all"
+                className="w-full px-4 py-3 bg-white border border-orange-200 rounded-lg font-sans text-slate-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-rose-400 focus:border-rose-400 transition-all"
                 placeholder="99.99"
               />
             </div>
@@ -154,7 +154,7 @@ export default function RevenueTracker({ onRevenueAdded }: RevenueTrackerProps) 
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={3}
-                className="w-full px-4 py-3 bg-white border border-orange-200 rounded-lg font-sans text-stone-800 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-rose-400 focus:border-rose-400 transition-all resize-none"
+                className="w-full px-4 py-3 bg-white border border-orange-200 rounded-lg font-sans text-slate-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-rose-400 focus:border-rose-400 transition-all resize-none"
                 placeholder="Add notes about this sale..."
               />
             </div>
