@@ -78,88 +78,97 @@ export default function RevenueTracker({ onRevenueAdded }: RevenueTrackerProps) 
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
-      <h2 className="text-2xl font-bold text-gray-900 mb-4">Track Revenue</h2>
-
-      {error && (
-        <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg">
-          {error}
+    <div className="relative group h-full">
+      <div className="absolute inset-0 bg-cyan-500/5 rounded-2xl blur-lg"></div>
+      <div className="relative bg-slate-900/40 backdrop-blur-xl border border-slate-800/50 rounded-2xl p-8 hover:border-cyan-500/20 transition-all duration-300 h-full flex flex-col">
+        <div className="flex items-center gap-2 mb-6">
+          <div className="w-2 h-2 bg-cyan-400 rounded-full"></div>
+          <h2 className="text-2xl font-serif text-slate-200">Track Revenue</h2>
         </div>
-      )}
 
-      {success && (
-        <div className="mb-4 p-3 bg-green-50 border border-green-200 text-green-700 rounded-lg">
-          Revenue added successfully!
-        </div>
-      )}
+        {error && (
+          <div className="mb-4 p-3 bg-red-900/20 backdrop-blur-sm border border-red-500/30 text-red-300 rounded-xl font-sans text-sm">
+            {error}
+          </div>
+        )}
 
-      {links.length === 0 ? (
-        <div className="text-center py-8">
-          <p className="text-gray-600 mb-4">No tracking links yet.</p>
-          <p className="text-sm text-gray-500">Create a tracking link first to start tracking revenue.</p>
-        </div>
-      ) : (
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="link" className="block text-sm font-medium text-gray-700 mb-1">
-              Select Content *
-            </label>
-            <select
-              id="link"
-              value={selectedLinkId}
-              onChange={(e) => setSelectedLinkId(e.target.value)}
-              required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+        {success && (
+          <div className="mb-4 p-3 bg-emerald-900/20 backdrop-blur-sm border border-emerald-500/30 text-emerald-300 rounded-xl font-sans text-sm font-semibold">
+            Revenue added successfully!
+          </div>
+        )}
+
+        {links.length === 0 ? (
+          <div className="flex-1 flex flex-col items-center justify-center py-8">
+            <div className="w-12 h-12 rounded-full bg-slate-800/50 border border-slate-700/50 flex items-center justify-center mb-4">
+              <span className="text-2xl">📊</span>
+            </div>
+            <p className="text-slate-400 font-sans mb-2 text-center">No tracking links yet</p>
+            <p className="text-sm text-slate-600 font-sans text-center">Create a campaign link first</p>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-4 flex-1 flex flex-col">
+            <div>
+              <label htmlFor="link" className="block text-sm font-sans font-semibold text-slate-400 mb-2 tracking-wide uppercase text-xs">
+                Select Content *
+              </label>
+              <select
+                id="link"
+                value={selectedLinkId}
+                onChange={(e) => setSelectedLinkId(e.target.value)}
+                required
+                className="w-full px-4 py-3 bg-slate-950/50 border border-slate-700/50 rounded-lg font-sans text-slate-200 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 transition-all"
+              >
+                <option value="">Choose a campaign...</option>
+                {links.map((link) => (
+                  <option key={link.id} value={link.id}>
+                    {link.title} ({link.platform})
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label htmlFor="amount" className="block text-sm font-sans font-semibold text-slate-400 mb-2 tracking-wide uppercase text-xs">
+                Revenue Amount ($) *
+              </label>
+              <input
+                id="amount"
+                type="number"
+                step="0.01"
+                min="0"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                required
+                className="w-full px-4 py-3 bg-slate-950/50 border border-slate-700/50 rounded-lg font-sans text-slate-200 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 transition-all"
+                placeholder="99.99"
+              />
+            </div>
+
+            <div className="flex-1 flex flex-col">
+              <label htmlFor="description" className="block text-sm font-sans font-semibold text-slate-400 mb-2 tracking-wide uppercase text-xs">
+                Description <span className="text-slate-600 normal-case">(Optional)</span>
+              </label>
+              <textarea
+                id="description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                rows={3}
+                className="w-full px-4 py-3 bg-slate-950/50 border border-slate-700/50 rounded-lg font-sans text-slate-200 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 transition-all resize-none"
+                placeholder="Add notes about this sale..."
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-4 bg-gradient-to-r from-cyan-500 to-emerald-500 text-white font-sans font-bold rounded-lg hover:shadow-xl hover:shadow-cyan-500/30 transition-all duration-300 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-none mt-auto"
             >
-              <option value="">Choose a tracking link...</option>
-              {links.map((link) => (
-                <option key={link.id} value={link.id}>
-                  {link.title} ({link.platform})
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label htmlFor="amount" className="block text-sm font-medium text-gray-700 mb-1">
-              Revenue Amount ($) *
-            </label>
-            <input
-              id="amount"
-              type="number"
-              step="0.01"
-              min="0"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent"
-              placeholder="99.99"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
-              Description (Optional)
-            </label>
-            <textarea
-              id="description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              rows={3}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent"
-              placeholder="Add notes about this sale..."
-            />
-          </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {loading ? 'Adding...' : 'Add Revenue'}
-          </button>
-        </form>
-      )}
+              {loading ? 'Adding...' : 'Add Revenue'}
+            </button>
+          </form>
+        )}
+      </div>
     </div>
   )
 }
