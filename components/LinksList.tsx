@@ -78,21 +78,21 @@ export default function LinksList() {
 
   const getPlatformColor = (platform: string) => {
     const colors: { [key: string]: string } = {
-      instagram: 'bg-pink-500/10 text-pink-300 border-pink-500/20',
-      tiktok: 'bg-slate-700/50 text-slate-200 border-slate-600/30',
-      youtube: 'bg-red-500/10 text-red-300 border-red-500/20',
-      twitter: 'bg-blue-500/10 text-blue-300 border-blue-500/20',
-      other: 'bg-slate-600/10 text-slate-300 border-slate-600/20',
+      instagram: 'bg-pink-50 text-pink-700 border-pink-200',
+      tiktok: 'bg-stone-100 text-stone-700 border-stone-300',
+      youtube: 'bg-red-50 text-red-700 border-red-200',
+      twitter: 'bg-blue-50 text-blue-700 border-blue-200',
+      other: 'bg-stone-50 text-stone-700 border-stone-200',
     }
-    return colors[platform] || 'bg-slate-600/10 text-slate-300 border-slate-600/20'
+    return colors[platform] || 'bg-stone-50 text-stone-700 border-stone-200'
   }
 
   if (loading) {
     return (
-      <div className="bg-slate-900/30 backdrop-blur-xl border border-slate-800/50 rounded-2xl p-8">
+      <div className="bg-white/70 backdrop-blur-xl border border-orange-200 rounded-2xl p-8 shadow-sm">
         <div className="flex items-center gap-3">
-          <div className="w-2 h-2 bg-slate-400 rounded-full animate-pulse"></div>
-          <p className="text-slate-400 font-sans">Loading campaigns...</p>
+          <div className="w-2 h-2 bg-orange-400 rounded-full animate-pulse"></div>
+          <p className="text-stone-600 font-sans">Loading campaigns...</p>
         </div>
       </div>
     )
@@ -100,33 +100,33 @@ export default function LinksList() {
 
   return (
     <div className="relative group">
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-700/5 to-slate-900/5 rounded-2xl blur-lg"></div>
-      <div className="relative bg-slate-900/30 backdrop-blur-xl border border-slate-800/50 rounded-2xl p-8 hover:border-slate-700/50 transition-all duration-300">
+      <div className="absolute inset-0 bg-gradient-to-br from-orange-100/30 to-rose-100/30 rounded-2xl blur-lg"></div>
+      <div className="relative bg-white/70 backdrop-blur-xl border border-orange-200 rounded-2xl p-8 hover:border-orange-300 hover:shadow-lg transition-all duration-300">
         <div className="flex items-center gap-2 mb-6">
-          <div className="w-2 h-2 bg-slate-400 rounded-full"></div>
-          <h2 className="text-2xl font-serif text-slate-200">Your Campaigns</h2>
+          <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+          <h2 className="text-2xl font-serif text-stone-800">Your Campaigns</h2>
         </div>
 
         {links.length === 0 ? (
           <div className="text-center py-12">
-            <div className="w-16 h-16 rounded-full bg-slate-800/50 border border-slate-700/50 flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 rounded-full bg-orange-100 border border-orange-200 flex items-center justify-center mx-auto mb-4">
               <span className="text-3xl">🔗</span>
             </div>
-            <p className="text-slate-400 font-sans mb-2">No campaigns yet</p>
-            <p className="text-sm text-slate-600 font-sans">Create your first tracking link above to get started</p>
+            <p className="text-stone-600 font-sans mb-2">No campaigns yet</p>
+            <p className="text-sm text-stone-500 font-sans">Create your first tracking link above to get started</p>
           </div>
         ) : (
           <div className="space-y-4">
             {links.map((link) => (
               <div
                 key={link.id}
-                className="bg-slate-800/30 border border-slate-700/30 rounded-xl p-5 hover:bg-slate-800/40 hover:border-emerald-500/20 transition-all duration-300 group/item"
+                className="bg-white border border-orange-200 rounded-xl p-5 hover:bg-orange-50/30 hover:border-orange-300 hover:shadow-md transition-all duration-300 group/item"
               >
                 <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-3 mb-3 flex-wrap">
                       <span className="text-2xl flex-shrink-0">{getPlatformIcon(link.platform)}</span>
-                      <h3 className="text-lg font-serif text-slate-200 group-hover/item:text-emerald-300 transition-colors truncate">{link.title}</h3>
+                      <h3 className="text-lg font-serif text-stone-800 group-hover/item:text-orange-700 transition-colors truncate">{link.title}</h3>
                       <span
                         className={`px-3 py-1 text-xs font-sans font-semibold rounded-lg border ${getPlatformColor(link.platform)} capitalize flex-shrink-0`}
                       >
@@ -134,20 +134,20 @@ export default function LinksList() {
                       </span>
                     </div>
 
-                    <div className="bg-slate-950/50 p-3 rounded-lg border border-slate-700/30 mb-4">
-                      <p className="text-sm text-slate-400 font-mono break-all">{link.full_tracking_url}</p>
+                    <div className="bg-orange-50/50 p-3 rounded-lg border border-orange-100 mb-4">
+                      <p className="text-sm text-stone-700 font-mono break-all">{link.full_tracking_url}</p>
                     </div>
 
                     <div className="flex flex-wrap gap-6 text-sm">
                       <div>
-                        <span className="text-slate-500 font-sans">Revenue: </span>
-                        <span className="font-sans font-bold text-emerald-400">
+                        <span className="text-stone-500 font-sans">Revenue: </span>
+                        <span className="font-sans font-bold text-orange-600">
                           ${parseFloat(link.total_revenue.toString()).toFixed(2)}
                         </span>
                       </div>
                       <div>
-                        <span className="text-slate-500 font-sans">Created: </span>
-                        <span className="font-sans font-semibold text-slate-300">
+                        <span className="text-stone-500 font-sans">Created: </span>
+                        <span className="font-sans font-semibold text-stone-700">
                           {new Date(link.created_at).toLocaleDateString()}
                         </span>
                       </div>
@@ -157,13 +157,13 @@ export default function LinksList() {
                   <div className="flex md:flex-col gap-2 flex-shrink-0">
                     <button
                       onClick={() => copyToClipboard(link.full_tracking_url, link.id)}
-                      className="flex-1 md:flex-none px-5 py-2.5 bg-gradient-to-r from-emerald-500 to-cyan-500 text-white font-sans font-semibold rounded-lg hover:shadow-lg hover:shadow-emerald-500/30 transition-all duration-300 hover:scale-105 text-sm"
+                      className="flex-1 md:flex-none px-5 py-2.5 bg-gradient-to-r from-orange-500 to-rose-500 text-white font-sans font-semibold rounded-lg hover:shadow-lg hover:shadow-orange-500/30 transition-all duration-300 hover:scale-105 text-sm"
                     >
                       {copiedId === link.id ? '✓ Copied!' : 'Copy Link'}
                     </button>
                     <button
                       onClick={() => deleteLink(link.id)}
-                      className="flex-1 md:flex-none px-5 py-2.5 bg-red-900/20 text-red-300 font-sans font-semibold rounded-lg border border-red-500/20 hover:bg-red-900/30 hover:border-red-500/30 transition-all duration-300 text-sm"
+                      className="flex-1 md:flex-none px-5 py-2.5 bg-red-50 text-red-700 font-sans font-semibold rounded-lg border border-red-200 hover:bg-red-100 hover:border-red-300 transition-all duration-300 text-sm"
                     >
                       Delete
                     </button>

@@ -58,44 +58,38 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0A1628] relative overflow-hidden">
-      {/* Atmospheric Background */}
-      <div className="fixed inset-0 opacity-30 pointer-events-none">
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-radial from-emerald-500/20 to-transparent blur-3xl"></div>
-        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-gradient-radial from-cyan-500/15 to-transparent blur-3xl"></div>
-      </div>
-
-      {/* Grain Texture Overlay */}
-      <div className="fixed inset-0 opacity-[0.015] pointer-events-none mix-blend-overlay"
-           style={{backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 400 400\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\'/%3E%3C/svg%3E")'}}></div>
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-rose-50 relative overflow-hidden">
+      {/* Subtle Background Pattern */}
+      <div className="fixed inset-0 opacity-[0.03] pointer-events-none"
+           style={{backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23000000\' fill-opacity=\'1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")'}}></div>
 
       {/* Header */}
-      <header className="relative border-b border-slate-800/50 backdrop-blur-xl bg-slate-900/30">
+      <header className="relative border-b border-orange-200/50 bg-white/80 backdrop-blur-xl shadow-sm">
         <div className="max-w-[1400px] mx-auto px-8 py-6">
           <div className="flex justify-between items-center">
             <div className={`transition-all duration-700 ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}>
-              <h1 className="text-3xl font-['DM_Serif_Display'] text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 via-cyan-300 to-emerald-400">
+              <h1 className="text-3xl font-['DM_Serif_Display'] text-transparent bg-clip-text bg-gradient-to-r from-orange-600 via-rose-600 to-orange-600">
                 PostProfit
               </h1>
-              <p className="text-slate-500 text-sm font-['Plus_Jakarta_Sans'] mt-1">Revenue Attribution Platform</p>
+              <p className="text-stone-600 text-sm font-['Plus_Jakarta_Sans'] mt-1">Revenue Attribution Platform</p>
             </div>
             <div className={`flex items-center gap-3 transition-all duration-700 delay-100 ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}>
-              <span className="text-slate-400 text-sm font-['Plus_Jakarta_Sans'] hidden md:block">{user?.email}</span>
+              <span className="text-stone-600 text-sm font-['Plus_Jakarta_Sans'] hidden md:block">{user?.email}</span>
               <button
                 onClick={() => router.push('/dashboard/setup')}
-                className="px-5 py-2.5 bg-gradient-to-r from-emerald-500 to-cyan-500 text-white font-['Plus_Jakarta_Sans'] font-semibold rounded-lg hover:shadow-lg hover:shadow-emerald-500/30 transition-all duration-300 hover:scale-105"
+                className="px-5 py-2.5 bg-gradient-to-r from-orange-500 to-rose-500 text-white font-['Plus_Jakarta_Sans'] font-semibold rounded-lg hover:shadow-lg hover:shadow-orange-500/30 transition-all duration-300 hover:scale-105"
               >
                 Setup
               </button>
               <button
                 onClick={() => router.push('/dashboard/settings')}
-                className="px-5 py-2.5 bg-slate-800/50 backdrop-blur-sm text-slate-300 font-['Plus_Jakarta_Sans'] font-semibold rounded-lg border border-slate-700/50 hover:bg-slate-700/50 hover:border-emerald-500/30 transition-all duration-300"
+                className="px-5 py-2.5 bg-white text-stone-700 font-['Plus_Jakarta_Sans'] font-semibold rounded-lg border border-orange-200 hover:bg-orange-50 hover:border-orange-300 transition-all duration-300"
               >
                 Settings
               </button>
               <button
                 onClick={handleSignOut}
-                className="px-5 py-2.5 text-slate-400 font-['Plus_Jakarta_Sans'] hover:text-slate-300 transition-colors"
+                className="px-5 py-2.5 text-stone-600 font-['Plus_Jakarta_Sans'] hover:text-stone-800 transition-colors"
               >
                 Sign Out
               </button>

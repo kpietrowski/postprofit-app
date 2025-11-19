@@ -78,32 +78,32 @@ export default function LinkGenerator({ onLinkCreated }: LinkGeneratorProps) {
 
   return (
     <div className="relative group h-full">
-      <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-cyan-500/5 rounded-2xl blur-lg"></div>
-      <div className="relative bg-slate-900/40 backdrop-blur-xl border border-slate-800/50 rounded-2xl p-8 hover:border-emerald-500/20 transition-all duration-300 h-full">
+      <div className="absolute inset-0 bg-gradient-to-br from-orange-200/20 to-rose-200/20 rounded-2xl blur-lg"></div>
+      <div className="relative bg-white/80 backdrop-blur-xl border border-orange-200 rounded-2xl p-8 hover:border-orange-300 hover:shadow-lg transition-all duration-300 h-full">
         <div className="flex items-center gap-2 mb-2">
-          <div className="w-2 h-2 bg-emerald-400 rounded-full"></div>
-          <h2 className="text-2xl font-serif text-slate-200">Create Campaign Link</h2>
+          <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+          <h2 className="text-2xl font-serif text-stone-800">Create Campaign Link</h2>
         </div>
-        <p className="text-slate-500 font-sans text-sm mb-6">
+        <p className="text-stone-600 font-sans text-sm mb-6">
           Generate tracking links for ManyChat auto-replies or boosted posts
         </p>
 
         {error && (
-          <div className="mb-6 p-4 bg-red-900/20 backdrop-blur-sm border border-red-500/30 text-red-300 rounded-xl font-sans">
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl font-sans">
             {error}
           </div>
         )}
 
         {success && generatedLink && (
-          <div className="mb-6 p-5 bg-emerald-900/20 backdrop-blur-sm border border-emerald-500/30 rounded-xl relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl"></div>
-            <p className="text-emerald-300 font-sans font-semibold mb-2 relative">Campaign link created!</p>
-            <p className="text-sm text-slate-400 font-sans mb-3 relative">Use this link in your social media:</p>
-            <div className="bg-slate-950/50 p-4 rounded-lg border border-emerald-500/20 break-all relative">
-              <p className="text-sm font-mono text-emerald-200 mb-3">{generatedLink.full_tracking_url}</p>
+          <div className="mb-6 p-5 bg-green-50 border border-green-200 rounded-xl relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-green-100/50 rounded-full blur-2xl"></div>
+            <p className="text-green-700 font-sans font-semibold mb-2 relative">Campaign link created!</p>
+            <p className="text-sm text-stone-600 font-sans mb-3 relative">Use this link in your social media:</p>
+            <div className="bg-white p-4 rounded-lg border border-green-200 break-all relative">
+              <p className="text-sm font-mono text-stone-700 mb-3">{generatedLink.full_tracking_url}</p>
               <button
                 onClick={() => copyToClipboard(generatedLink.full_tracking_url)}
-                className="px-4 py-2 bg-gradient-to-r from-emerald-500 to-cyan-500 text-white font-sans font-semibold rounded-lg hover:shadow-lg hover:shadow-emerald-500/30 transition-all duration-300 hover:scale-105"
+                className="px-4 py-2 bg-gradient-to-r from-orange-500 to-rose-500 text-white font-sans font-semibold rounded-lg hover:shadow-lg hover:shadow-orange-500/30 transition-all duration-300 hover:scale-105"
               >
                 Copy Link
               </button>
@@ -114,7 +114,7 @@ export default function LinkGenerator({ onLinkCreated }: LinkGeneratorProps) {
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
-              <label htmlFor="title" className="block text-sm font-sans font-semibold text-slate-400 mb-2 tracking-wide uppercase text-xs">
+              <label htmlFor="title" className="block text-sm font-sans font-semibold text-stone-700 mb-2 tracking-wide uppercase text-xs">
                 Content Title *
               </label>
               <input
@@ -123,13 +123,13 @@ export default function LinkGenerator({ onLinkCreated }: LinkGeneratorProps) {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 required
-                className="w-full px-4 py-3 bg-slate-950/50 border border-slate-700/50 rounded-lg font-sans text-slate-200 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all"
+                className="w-full px-4 py-3 bg-white border border-orange-200 rounded-lg font-sans text-stone-800 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 transition-all"
                 placeholder="Morning Routine Video"
               />
             </div>
 
             <div>
-              <label htmlFor="platform" className="block text-sm font-sans font-semibold text-slate-400 mb-2 tracking-wide uppercase text-xs">
+              <label htmlFor="platform" className="block text-sm font-sans font-semibold text-stone-700 mb-2 tracking-wide uppercase text-xs">
                 Platform *
               </label>
               <select
@@ -137,7 +137,7 @@ export default function LinkGenerator({ onLinkCreated }: LinkGeneratorProps) {
                 value={platform}
                 onChange={(e) => setPlatform(e.target.value)}
                 required
-                className="w-full px-4 py-3 bg-slate-950/50 border border-slate-700/50 rounded-lg font-sans text-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all"
+                className="w-full px-4 py-3 bg-white border border-orange-200 rounded-lg font-sans text-stone-800 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 transition-all"
               >
                 <option value="instagram">Instagram</option>
                 <option value="tiktok">TikTok</option>
@@ -149,7 +149,7 @@ export default function LinkGenerator({ onLinkCreated }: LinkGeneratorProps) {
           </div>
 
           <div>
-            <label htmlFor="destinationUrl" className="block text-sm font-sans font-semibold text-slate-400 mb-2 tracking-wide uppercase text-xs">
+            <label htmlFor="destinationUrl" className="block text-sm font-sans font-semibold text-stone-700 mb-2 tracking-wide uppercase text-xs">
               Your Website URL *
             </label>
             <input
@@ -158,20 +158,20 @@ export default function LinkGenerator({ onLinkCreated }: LinkGeneratorProps) {
               value={destinationUrl}
               onChange={(e) => setDestinationUrl(e.target.value)}
               required
-              className="w-full px-4 py-3 bg-slate-950/50 border border-slate-700/50 rounded-lg font-sans text-slate-200 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all"
+              className="w-full px-4 py-3 bg-white border border-orange-200 rounded-lg font-sans text-stone-800 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 transition-all"
               placeholder="https://weddings.chatoptimized.io"
             />
-            <p className="mt-2 text-xs text-slate-600 font-sans">
+            <p className="mt-2 text-xs text-stone-500 font-sans">
               This must be YOUR domain where you have the tracking snippet installed
             </p>
           </div>
 
-          <div className="border-t border-slate-700/30 pt-5">
-            <h3 className="text-lg font-serif text-slate-300 mb-4">UTM Parameters <span className="text-slate-600 text-sm font-sans">(Optional)</span></h3>
+          <div className="border-t border-orange-200 pt-5">
+            <h3 className="text-lg font-serif text-stone-800 mb-4">UTM Parameters <span className="text-stone-500 text-sm font-sans">(Optional)</span></h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label htmlFor="utmSource" className="block text-sm font-sans font-semibold text-slate-400 mb-2 tracking-wide uppercase text-xs">
+                <label htmlFor="utmSource" className="block text-sm font-sans font-semibold text-stone-700 mb-2 tracking-wide uppercase text-xs">
                   UTM Source
                 </label>
                 <input
@@ -179,13 +179,13 @@ export default function LinkGenerator({ onLinkCreated }: LinkGeneratorProps) {
                   type="text"
                   value={utmSource}
                   onChange={(e) => setUtmSource(e.target.value)}
-                  className="w-full px-4 py-3 bg-slate-950/50 border border-slate-700/50 rounded-lg font-sans text-slate-200 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all"
+                  className="w-full px-4 py-3 bg-white border border-orange-200 rounded-lg font-sans text-stone-800 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 transition-all"
                   placeholder="Auto-filled from platform"
                 />
               </div>
 
               <div>
-                <label htmlFor="utmMedium" className="block text-sm font-sans font-semibold text-slate-400 mb-2 tracking-wide uppercase text-xs">
+                <label htmlFor="utmMedium" className="block text-sm font-sans font-semibold text-stone-700 mb-2 tracking-wide uppercase text-xs">
                   UTM Medium
                 </label>
                 <input
@@ -193,13 +193,13 @@ export default function LinkGenerator({ onLinkCreated }: LinkGeneratorProps) {
                   type="text"
                   value={utmMedium}
                   onChange={(e) => setUtmMedium(e.target.value)}
-                  className="w-full px-4 py-3 bg-slate-950/50 border border-slate-700/50 rounded-lg font-sans text-slate-200 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all"
+                  className="w-full px-4 py-3 bg-white border border-orange-200 rounded-lg font-sans text-stone-800 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 transition-all"
                   placeholder="social"
                 />
               </div>
 
               <div>
-                <label htmlFor="utmCampaign" className="block text-sm font-sans font-semibold text-slate-400 mb-2 tracking-wide uppercase text-xs">
+                <label htmlFor="utmCampaign" className="block text-sm font-sans font-semibold text-stone-700 mb-2 tracking-wide uppercase text-xs">
                   UTM Campaign
                 </label>
                 <input
@@ -207,13 +207,13 @@ export default function LinkGenerator({ onLinkCreated }: LinkGeneratorProps) {
                   type="text"
                   value={utmCampaign}
                   onChange={(e) => setUtmCampaign(e.target.value)}
-                  className="w-full px-4 py-3 bg-slate-950/50 border border-slate-700/50 rounded-lg font-sans text-slate-200 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all"
+                  className="w-full px-4 py-3 bg-white border border-orange-200 rounded-lg font-sans text-stone-800 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 transition-all"
                   placeholder="Auto-filled from title"
                 />
               </div>
 
               <div>
-                <label htmlFor="utmContent" className="block text-sm font-sans font-semibold text-slate-400 mb-2 tracking-wide uppercase text-xs">
+                <label htmlFor="utmContent" className="block text-sm font-sans font-semibold text-stone-700 mb-2 tracking-wide uppercase text-xs">
                   UTM Content
                 </label>
                 <input
@@ -221,7 +221,7 @@ export default function LinkGenerator({ onLinkCreated }: LinkGeneratorProps) {
                   type="text"
                   value={utmContent}
                   onChange={(e) => setUtmContent(e.target.value)}
-                  className="w-full px-4 py-3 bg-slate-950/50 border border-slate-700/50 rounded-lg font-sans text-slate-200 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all"
+                  className="w-full px-4 py-3 bg-white border border-orange-200 rounded-lg font-sans text-stone-800 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 transition-all"
                   placeholder="Optional"
                 />
               </div>
@@ -231,7 +231,7 @@ export default function LinkGenerator({ onLinkCreated }: LinkGeneratorProps) {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-4 bg-gradient-to-r from-emerald-500 to-cyan-500 text-white font-sans font-bold rounded-lg hover:shadow-xl hover:shadow-emerald-500/30 transition-all duration-300 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-none"
+            className="w-full py-4 bg-gradient-to-r from-orange-500 to-rose-500 text-white font-sans font-bold rounded-lg hover:shadow-xl hover:shadow-orange-500/30 transition-all duration-300 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-none"
           >
             {loading ? 'Creating...' : 'Generate Tracking Link'}
           </button>
