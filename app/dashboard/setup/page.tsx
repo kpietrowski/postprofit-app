@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 export default function SetupPage() {
   const [apiKey, setApiKey] = useState<string>('')
   const [hasExistingKey, setHasExistingKey] = useState(false)
+  const [existingKeyPrefix, setExistingKeyPrefix] = useState<string>('')
   const [copied, setCopied] = useState<'key' | 'snippet' | null>(null)
   const [loading, setLoading] = useState(true)
   const [generating, setGenerating] = useState(false)
@@ -20,7 +21,10 @@ export default function SetupPage() {
       const response = await fetch('/api/api-keys')
       if (response.ok) {
         const keys = await response.json()
-        setHasExistingKey(keys.length > 0)
+        if (keys.length > 0) {
+          setHasExistingKey(true)
+          setExistingKeyPrefix(keys[0].key_prefix)
+        }
       }
     } catch (error) {
       console.error('Failed to check API key:', error)
@@ -116,12 +120,15 @@ export default function SetupPage() {
               {!apiKey && hasExistingKey && (
                 <div className="space-y-4">
                   <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl">
+                    <p className="text-amber-800 font-sans text-sm font-semibold mb-2">
+                      ⚠️ You already have an API key
+                    </p>
                     <p className="text-amber-800 font-sans text-sm">
-                      ⚠️ You already have an API key, but for security reasons we can only show it once when generated.
+                      For security reasons, we can only show the full key once when generated. Your existing key starts with: <span className="font-mono font-bold">{existingKeyPrefix}...</span>
                     </p>
                   </div>
                   <p className="text-stone-600 font-sans">
-                    If you lost your key, generate a new one below. This will revoke your old key.
+                    If you lost your key or need to regenerate it, click below. <strong>This will revoke your old key</strong>, so update your website snippet after generating.
                   </p>
                   <button
                     onClick={generateNewKey}
