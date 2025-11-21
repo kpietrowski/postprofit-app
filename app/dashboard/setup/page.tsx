@@ -147,7 +147,7 @@ export default function SetupPage() {
                       ✓ API Key Generated Successfully!
                     </p>
                     <p className="text-green-700 font-sans text-sm">
-                      ⚠️ Copy this key now - you won't be able to see it again after leaving this page!
+                      ⚠️ Copy this key now - you won&apos;t be able to see it again after leaving this page!
                     </p>
                   </div>
 
@@ -202,7 +202,7 @@ export default function SetupPage() {
               <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-xl">
                 <p className="text-sm text-blue-900 font-sans font-semibold mb-2">💡 Where to paste:</p>
                 <ul className="list-disc list-inside text-sm text-blue-800 font-sans space-y-1">
-                  <li>WordPress: Theme footer or plugin like "Insert Headers and Footers"</li>
+                  <li>WordPress: Theme footer or plugin like &quot;Insert Headers and Footers&quot;</li>
                   <li>Shopify: Theme → Edit code → theme.liquid before &lt;/body&gt;</li>
                   <li>Webflow: Project Settings → Custom Code → Footer Code</li>
                   <li>Custom site: In your HTML template footer</li>

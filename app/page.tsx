@@ -66,7 +66,7 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-serif text-slate-900 mb-4">
-              You're Creating Content in the Dark
+              You&apos;re Creating Content in the Dark
             </h2>
             <p className="text-xl text-stone-600 font-sans max-w-3xl mx-auto">
               Creators spend hours making Instagram reels, TikToks, and YouTube videos...
@@ -93,7 +93,7 @@ export default function LandingPage() {
               <div className="text-4xl mb-4">🤷</div>
               <h3 className="text-xl font-serif text-slate-900 mb-3">Guessing Game</h3>
               <p className="text-stone-600 font-sans">
-                "I think this video did well..." but you can't prove it with real revenue data.
+                &quot;I think this video did well...&quot; but you can&apos;t prove it with real revenue data.
               </p>
             </div>
           </div>
@@ -170,7 +170,7 @@ export default function LandingPage() {
                 Posting reels about your wedding photography business? Track which reels actually book clients.
               </p>
               <p className="text-sm text-orange-600 font-sans font-semibold">
-                "My morning routine reel drove $2,400 in bookings!" - Wedding Photographer
+                &quot;My morning routine reel drove $2,400 in bookings!&quot; - Wedding Photographer
               </p>
             </div>
 
@@ -180,7 +180,7 @@ export default function LandingPage() {
                 Selling digital products or courses? See exactly which TikToks convert browsers to buyers.
               </p>
               <p className="text-sm text-orange-600 font-sans font-semibold">
-                "That trending audio video made me $890!" - Course Creator
+                &quot;That trending audio video made me $890!&quot; - Course Creator
               </p>
             </div>
 
@@ -190,7 +190,7 @@ export default function LandingPage() {
                 Using auto-replies to send links? Know which automated flows actually drive sales.
               </p>
               <p className="text-sm text-orange-600 font-sans font-semibold">
-                "My DM automation brought in $1,200 this week!" - Coach
+                &quot;My DM automation brought in $1,200 this week!&quot; - Coach
               </p>
             </div>
 
@@ -200,7 +200,7 @@ export default function LandingPage() {
                 Boosting posts to drive product sales? Track ROI on every single promoted piece of content.
               </p>
               <p className="text-sm text-orange-600 font-sans font-semibold">
-                "Spent $50 boosting, made $650!" - Boutique Owner
+                &quot;Spent $50 boosting, made $650!&quot; - Boutique Owner
               </p>
             </div>
           </div>
