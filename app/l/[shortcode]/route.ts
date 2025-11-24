@@ -7,10 +7,10 @@ import { NextResponse } from 'next/server'
  */
 export async function GET(
   request: Request,
-  { params }: { params: { shortcode: string } }
+  { params }: { params: Promise<{ shortcode: string }> }
 ) {
   try {
-    const { shortcode } = params
+    const { shortcode } = await params
     const supabase = await createClient()
 
     // Look up tracking link by short code
