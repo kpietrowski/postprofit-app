@@ -25,19 +25,23 @@ export async function GET(
       return NextResponse.redirect(new URL('https://app.postprofit.io', request.url))
     }
 
-    // Increment click count (fire and forget for speed)
-    void supabase
-      .from('tracking_links')
-      .update({ clicks: (trackingLink.clicks || 0) + 1 })
-      .eq('id', trackingLink.id)
-      .then(() => {
+    // Increment click count (fire and forget for speed - don't await)
+    const incrementClicks = async () => {
+      try {
+        await supabase
+          .from('tracking_links')
+          .update({ clicks: (trackingLink.clicks || 0) + 1 })
+          .eq('id', trackingLink.id)
         console.log(`[Click Tracking] Incremented clicks for ${shortcode}`)
-      })
-      .catch((err: unknown) => {
+      } catch (err) {
         console.error(`[Click Tracking] Error incrementing clicks:`, err)
-      })
+      }
+    }
 
-    // Immediately redirect to destination (don't wait for click update)
+    // Fire off the click increment but don't wait for it
+    incrementClicks()
+
+    // Immediately redirect to destination
     return NextResponse.redirect(trackingLink.full_tracking_url, {
       status: 307, // Temporary redirect
     })
