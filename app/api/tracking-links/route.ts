@@ -55,7 +55,7 @@ export async function POST(request: Request) {
 
   const full_tracking_url = url.toString()
 
-  // Generate a short code (simplified - you might want to use a proper URL shortener)
+  // Generate a short code (6 characters, alphanumeric)
   const short_code = Math.random().toString(36).substring(2, 8)
 
   const { data: link, error } = await supabase
@@ -80,5 +80,12 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 
-  return NextResponse.json(link, { status: 201 })
+  // Add the short link URL to the response
+  const shortLinkUrl = `${new URL(request.url).origin}/l/${short_code}`
+  const responseData = {
+    ...link,
+    short_link_url: shortLinkUrl
+  }
+
+  return NextResponse.json(responseData, { status: 201 })
 }

@@ -7,6 +7,7 @@ interface TrackingLink {
   title: string
   platform: string
   full_tracking_url: string
+  short_code: string
   total_revenue: number
   clicks: number
   created_at: string
@@ -135,19 +136,34 @@ export default function LinksList() {
                     </div>
 
                     <div className="bg-orange-50/50 p-3 rounded-lg border border-orange-100 mb-4">
-                      <p className="text-sm text-slate-900 font-mono break-all">{link.full_tracking_url}</p>
+                      <p className="text-xs text-stone-500 font-sans mb-1">Short Link:</p>
+                      <p className="text-sm text-slate-900 font-mono font-bold break-all">
+                        {typeof window !== 'undefined' ? `${window.location.origin}/l/${link.short_code}` : `app.postprofit.io/l/${link.short_code}`}
+                      </p>
                     </div>
 
-                    <div className="flex flex-wrap gap-6 text-sm">
-                      <div>
-                        <span className="text-stone-500 font-sans">Revenue: </span>
-                        <span className="font-sans font-bold text-slate-900">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                      <div className="bg-white p-3 rounded-lg border border-orange-100">
+                        <span className="text-stone-500 font-sans text-xs block mb-1">Clicks</span>
+                        <span className="font-sans font-bold text-slate-900 text-lg">
+                          {link.clicks || 0}
+                        </span>
+                      </div>
+                      <div className="bg-white p-3 rounded-lg border border-orange-100">
+                        <span className="text-stone-500 font-sans text-xs block mb-1">Revenue</span>
+                        <span className="font-sans font-bold text-slate-900 text-lg">
                           ${parseFloat(link.total_revenue.toString()).toFixed(2)}
                         </span>
                       </div>
-                      <div>
-                        <span className="text-stone-500 font-sans">Created: </span>
-                        <span className="font-sans font-semibold text-slate-900">
+                      <div className="bg-white p-3 rounded-lg border border-orange-100">
+                        <span className="text-stone-500 font-sans text-xs block mb-1">Conv. Rate</span>
+                        <span className="font-sans font-bold text-slate-900 text-lg">
+                          {link.clicks > 0 ? ((parseFloat(link.total_revenue.toString()) > 0 ? 1 : 0) / link.clicks * 100).toFixed(1) : '0.0'}%
+                        </span>
+                      </div>
+                      <div className="bg-white p-3 rounded-lg border border-orange-100">
+                        <span className="text-stone-500 font-sans text-xs block mb-1">Created</span>
+                        <span className="font-sans font-semibold text-slate-900 text-sm">
                           {new Date(link.created_at).toLocaleDateString()}
                         </span>
                       </div>
@@ -156,7 +172,10 @@ export default function LinksList() {
 
                   <div className="flex md:flex-col gap-2 flex-shrink-0">
                     <button
-                      onClick={() => copyToClipboard(link.full_tracking_url, link.id)}
+                      onClick={() => copyToClipboard(
+                        typeof window !== 'undefined' ? `${window.location.origin}/l/${link.short_code}` : `https://app.postprofit.io/l/${link.short_code}`,
+                        link.id
+                      )}
                       className="flex-1 md:flex-none px-5 py-2.5 bg-gradient-to-r from-orange-500 to-rose-500 text-white font-sans font-semibold rounded-lg hover:shadow-lg hover:shadow-orange-500/30 transition-all duration-300 hover:scale-105 text-sm"
                     >
                       {copiedId === link.id ? '✓ Copied!' : 'Copy Link'}

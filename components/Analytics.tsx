@@ -14,6 +14,7 @@ export default function Analytics() {
   const [links, setLinks] = useState<TrackingLink[]>([])
   const [loading, setLoading] = useState(true)
   const [totalRevenue, setTotalRevenue] = useState(0)
+  const [totalClicks, setTotalClicks] = useState(0)
   const [topPerformer, setTopPerformer] = useState<TrackingLink | null>(null)
 
   useEffect(() => {
@@ -32,6 +33,12 @@ export default function Analytics() {
           sum + parseFloat(link.total_revenue.toString()), 0
         )
         setTotalRevenue(total)
+
+        // Calculate total clicks
+        const clicks = data.reduce((sum: number, link: TrackingLink) =>
+          sum + (link.clicks || 0), 0
+        )
+        setTotalClicks(clicks)
 
         // Find top performer
         const top = data.reduce((prev: TrackingLink | null, current: TrackingLink) => {
@@ -63,7 +70,7 @@ export default function Analytics() {
   return (
     <div>
       {/* Hero Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
         {/* Total Revenue - Prominent */}
         <div className="md:col-span-2 relative group">
           <div className="absolute inset-0 bg-gradient-to-r from-orange-200/40 to-rose-200/40 rounded-2xl blur-xl"></div>
@@ -73,6 +80,16 @@ export default function Analytics() {
               ${totalRevenue.toFixed(2)}
             </p>
             <p className="text-stone-500 font-sans text-sm">from {links.length} campaigns</p>
+          </div>
+        </div>
+
+        {/* Total Clicks */}
+        <div className="relative group">
+          <div className="absolute inset-0 bg-blue-200/30 rounded-2xl blur-lg"></div>
+          <div className="relative bg-white/90 backdrop-blur-xl border border-orange-200 rounded-2xl p-8 hover:border-blue-300 hover:shadow-lg transition-all duration-300">
+            <p className="text-sm font-sans font-semibold text-blue-600 mb-2 tracking-wider uppercase">Total Clicks</p>
+            <p className="text-5xl font-serif text-slate-900 mb-2">{totalClicks.toLocaleString()}</p>
+            <p className="text-stone-500 font-sans text-sm">link clicks</p>
           </div>
         </div>
 
@@ -101,11 +118,17 @@ export default function Analytics() {
               {topPerformer ? (
                 <>
                   <p className="text-2xl font-serif text-slate-900 mb-2 truncate">{topPerformer.title}</p>
-                  <div className="flex items-baseline gap-2">
+                  <div className="flex items-baseline gap-3 mb-3">
                     <p className="text-3xl font-sans font-bold text-slate-900">
                       ${parseFloat(topPerformer.total_revenue.toString()).toFixed(2)}
                     </p>
                     <p className="text-stone-500 font-sans text-sm capitalize">{topPerformer.platform}</p>
+                  </div>
+                  <div className="flex gap-4 text-sm">
+                    <div>
+                      <span className="text-stone-500 font-sans">Clicks: </span>
+                      <span className="font-sans font-bold text-slate-900">{topPerformer.clicks || 0}</span>
+                    </div>
                   </div>
                 </>
               ) : (

@@ -97,17 +97,21 @@ export default function LinkGenerator({ onLinkCreated }: LinkGeneratorProps) {
         {success && generatedLink && (
           <div className="mb-6 p-5 bg-green-50 border border-green-200 rounded-xl relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-green-100/50 rounded-full blur-2xl"></div>
-            <p className="text-green-700 font-sans font-semibold mb-2 relative">Campaign link created!</p>
-            <p className="text-sm text-stone-600 font-sans mb-3 relative">Use this link in your social media:</p>
-            <div className="bg-white p-4 rounded-lg border border-green-200 break-all relative">
-              <p className="text-sm font-mono text-slate-900 mb-3">{generatedLink.full_tracking_url}</p>
+            <p className="text-green-700 font-sans font-semibold mb-2 relative">✓ Campaign link created!</p>
+            <p className="text-sm text-stone-600 font-sans mb-3 relative">Use this short link in your social media:</p>
+            <div className="bg-white p-4 rounded-lg border border-green-200 break-all relative mb-3">
+              <p className="text-lg font-mono text-slate-900 mb-3 font-bold">{generatedLink.short_link_url || `${window.location.origin}/l/${generatedLink.short_code}`}</p>
               <button
-                onClick={() => copyToClipboard(generatedLink.full_tracking_url)}
+                onClick={() => copyToClipboard(generatedLink.short_link_url || `${window.location.origin}/l/${generatedLink.short_code}`)}
                 className="px-4 py-2 bg-gradient-to-r from-orange-500 to-rose-500 text-white font-sans font-semibold rounded-lg hover:shadow-lg hover:shadow-orange-500/30 transition-all duration-300 hover:scale-105"
               >
-                Copy Link
+                Copy Short Link
               </button>
             </div>
+            <details className="text-xs text-stone-500 font-sans">
+              <summary className="cursor-pointer hover:text-stone-700">Show full tracking URL</summary>
+              <p className="mt-2 font-mono text-stone-600 break-all">{generatedLink.full_tracking_url}</p>
+            </details>
           </div>
         )}
 
