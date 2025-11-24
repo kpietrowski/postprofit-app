@@ -2,22 +2,174 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* Import Fonts - Satoshi for body, Instrument Serif for display */
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap');
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('https://cdn.fontshare.com/wf/RVPWX6RDPXGKKK4UMVHSSLXDOYQA3JKE/G6UFANLHIKK7JTAOI25G2XYXZ7ULCNQ6/XCAHTMSIJZZFJAHGWIZIJKNRJXXEFIQQ.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+@font-face {
+  font-family: 'Satoshi';
+  src: url('https://cdn.fontshare.com/wf/QLC7LFIQSGT7FUVXOSNUE3PWGA4W2ADP/XDQUUAAYJGX6MTSFLKHB4SO7BYNVRZFC/6GFJDQHW73YXKVMNAV35S2LLBWIRFACB.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('https://cdn.fontshare.com/wf/B6IOWARRPG7LVNIU3TN6NQ3BXGW2LCNY/TEZFEJQDZ4O62OCMGSQCHZCQF6W4LU5X/AJVUQGVJB5U6CTKJLK3V5Q4EQ2OFQM7G.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('https://cdn.fontshare.com/wf/6LLN22OHZLVQNGSIDXU3CVY3SFCUCVCS/4IY6RLNF46TLNEGDXGVUIJBP45PWYQ3L/OL7IMHZYHTAYPV5WLAXADWBXEKCVYURQ.woff2') format('woff2');
+  font-weight: 900;
+  font-style: normal;
+}
+
+:root {
+  /* Cream/Warm neutrals */
+  --bg-primary: #F5F3EE;
+  --bg-secondary: #FFFFFF;
+  --bg-card: #FFFFFF;
+
+  /* Text colors */
+  --text-primary: #1A1A1A;
+  --text-secondary: #4A4A4A;
+  --text-muted: #6B6B6B;
+
+  /* Accent colors - modern, vibrant */
+  --accent-green: #6366F1;
+  --accent-green-light: #EEF2FF;
+  --accent-blue: #2563EB;
+  --accent-blue-light: #EFF6FF;
+  --accent-pink: #EC4899;
+  --accent-pink-light: #FDF2F8;
+  --accent-purple: #8B5CF6;
+  --accent-purple-light: #F5F3FF;
+  --accent-orange: #F97316;
+  --accent-orange-light: #FFF7ED;
+  --accent-yellow: #EAB308;
+  --accent-yellow-light: #FEFCE8;
+  --accent-teal: #14B8A6;
+  --accent-teal-light: #F0FDFA;
+
+  /* Borders */
+  --border-light: #E8E6E1;
+  --border-medium: #D4D2CD;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.06);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.08);
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: var(--text-primary);
+  background: var(--bg-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Serif display font utility */
+.font-display {
+  font-family: 'Instrument Serif', Georgia, serif;
+}
+
+/* Card base styles */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 20px;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--border-medium);
+}
+
+/* Pill/chip styles */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+
+.pill-active {
+  background: var(--accent-green);
+  color: white;
+}
+
+/* Large metric number */
+.metric-large {
+  font-family: 'Satoshi', sans-serif;
+  font-weight: 900;
+  font-size: clamp(3rem, 8vw, 5rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
+}
+
+/* Platform icon container */
+.platform-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+/* Striped pattern for chart bars */
+.pattern-stripe {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 3px,
+    currentColor 3px,
+    currentColor 4px
+  );
+  opacity: 0.15;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-medium);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* Selection color */
+::selection {
+  background: var(--accent-green);
+  color: white;
 }
 
 @layer utilities {

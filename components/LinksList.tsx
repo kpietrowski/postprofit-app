@@ -13,10 +13,45 @@ interface TrackingLink {
   created_at: string
 }
 
+const platformConfig: Record<string, { icon: string; color: string; bgColor: string; label: string }> = {
+  instagram: {
+    icon: '📸',
+    color: '#E4405F',
+    bgColor: '#FDF2F8',
+    label: 'Instagram'
+  },
+  tiktok: {
+    icon: '🎵',
+    color: '#000000',
+    bgColor: '#F5F5F5',
+    label: 'TikTok'
+  },
+  youtube: {
+    icon: '▶️',
+    color: '#FF0000',
+    bgColor: '#FEF2F2',
+    label: 'YouTube'
+  },
+  twitter: {
+    icon: '𝕏',
+    color: '#000000',
+    bgColor: '#F5F5F5',
+    label: 'Twitter'
+  },
+  other: {
+    icon: '🔗',
+    color: '#6B7280',
+    bgColor: '#F9FAFB',
+    label: 'Other'
+  },
+}
+
 export default function LinksList() {
   const [links, setLinks] = useState<TrackingLink[]>([])
   const [loading, setLoading] = useState(true)
   const [copiedId, setCopiedId] = useState<string | null>(null)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [platformFilter, setPlatformFilter] = useState<string>('all')
 
   useEffect(() => {
     fetchLinks()
@@ -66,133 +101,182 @@ export default function LinksList() {
     }
   }
 
-  const getPlatformIcon = (platform: string) => {
-    const icons: { [key: string]: string } = {
-      instagram: '📸',
-      tiktok: '🎵',
-      youtube: '▶️',
-      twitter: '🐦',
-      other: '🔗',
-    }
-    return icons[platform] || '🔗'
-  }
+  const filteredLinks = links
+    .filter(link => {
+      const matchesSearch = link.title.toLowerCase().includes(searchQuery.toLowerCase())
+      const matchesPlatform = platformFilter === 'all' || link.platform === platformFilter
+      return matchesSearch && matchesPlatform
+    })
 
-  const getPlatformColor = (platform: string) => {
-    const colors: { [key: string]: string } = {
-      instagram: 'bg-pink-50 text-pink-700 border-pink-200',
-      tiktok: 'bg-stone-100 text-stone-700 border-stone-300',
-      youtube: 'bg-red-50 text-red-700 border-red-200',
-      twitter: 'bg-blue-50 text-blue-700 border-blue-200',
-      other: 'bg-stone-50 text-stone-700 border-stone-200',
-    }
-    return colors[platform] || 'bg-stone-50 text-stone-700 border-stone-200'
-  }
+  const availablePlatforms = [...new Set(links.map(link => link.platform))]
 
   if (loading) {
     return (
-      <div className="bg-white/70 backdrop-blur-xl border border-orange-200 rounded-2xl p-8 shadow-sm">
+      <div className="card p-8">
         <div className="flex items-center gap-3">
-          <div className="w-2 h-2 bg-orange-400 rounded-full animate-pulse"></div>
-          <p className="text-stone-600 font-sans">Loading campaigns...</p>
+          <div className="w-2 h-2 bg-[var(--accent-green)] rounded-full animate-pulse"></div>
+          <p className="text-[var(--text-secondary)] text-sm">Loading campaigns...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="relative group">
-      <div className="absolute inset-0 bg-gradient-to-br from-orange-100/30 to-rose-100/30 rounded-2xl blur-lg"></div>
-      <div className="relative bg-white/70 backdrop-blur-xl border border-orange-200 rounded-2xl p-8 hover:border-orange-300 hover:shadow-lg transition-all duration-300">
-        <div className="flex items-center gap-2 mb-6">
-          <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
-          <h2 className="text-2xl font-serif text-slate-900">Your Campaigns</h2>
+    <div className="card p-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+        <div>
+          <h2 className="text-lg font-bold text-[var(--text-primary)]">Campaigns</h2>
+          <p className="text-sm text-[var(--text-muted)]">{links.length} total links</p>
         </div>
 
-        {links.length === 0 ? (
-          <div className="text-center py-12">
-            <div className="w-16 h-16 rounded-full bg-orange-100 border border-orange-200 flex items-center justify-center mx-auto mb-4">
-              <span className="text-3xl">🔗</span>
-            </div>
-            <p className="text-stone-600 font-sans mb-2">No campaigns yet</p>
-            <p className="text-sm text-stone-500 font-sans">Create your first tracking link above to get started</p>
+        <div className="flex items-center gap-3">
+          {/* Search */}
+          <div className="flex items-center gap-2 px-3 py-2 bg-[var(--bg-primary)] rounded-lg border border-[var(--border-light)] w-48">
+            <svg className="w-4 h-4 text-[var(--text-muted)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <input
+              type="text"
+              placeholder="Search..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="bg-transparent text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] outline-none flex-1"
+            />
           </div>
-        ) : (
-          <div className="space-y-4">
-            {links.map((link) => (
+
+          {/* Platform filter dropdown */}
+          <select
+            value={platformFilter}
+            onChange={(e) => setPlatformFilter(e.target.value)}
+            className="px-3 py-2 bg-[var(--bg-primary)] rounded-lg border border-[var(--border-light)] text-sm text-[var(--text-primary)] outline-none cursor-pointer"
+          >
+            <option value="all">All Platforms</option>
+            {availablePlatforms.map(platform => {
+              const config = platformConfig[platform] || platformConfig.other
+              return (
+                <option key={platform} value={platform}>{config.label}</option>
+              )
+            })}
+          </select>
+        </div>
+      </div>
+
+      {/* Links Grid */}
+      {links.length === 0 ? (
+        <div className="text-center py-16">
+          <div className="w-16 h-16 rounded-2xl bg-[var(--bg-primary)] flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-[var(--text-muted)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+            </svg>
+          </div>
+          <p className="text-[var(--text-primary)] font-medium mb-1">No campaigns yet</p>
+          <p className="text-sm text-[var(--text-muted)]">Create your first tracking link above to get started</p>
+        </div>
+      ) : filteredLinks.length === 0 ? (
+        <div className="text-center py-12">
+          <p className="text-[var(--text-secondary)]">No campaigns match your search</p>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {filteredLinks.map((link) => {
+            const config = platformConfig[link.platform] || platformConfig.other
+            const shortLinkUrl = typeof window !== 'undefined'
+              ? `${window.location.origin}/l/${link.short_code}`
+              : `app.postprofit.io/l/${link.short_code}`
+
+            return (
               <div
                 key={link.id}
-                className="bg-white border border-orange-200 rounded-xl p-5 hover:bg-orange-50/30 hover:border-orange-300 hover:shadow-md transition-all duration-300 group/item"
+                className="group p-4 rounded-2xl border border-[var(--border-light)] hover:border-[var(--border-medium)] hover:shadow-[var(--shadow-md)] transition-all duration-200 bg-white"
               >
-                <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-3 mb-3 flex-wrap">
-                      <span className="text-2xl flex-shrink-0">{getPlatformIcon(link.platform)}</span>
-                      <h3 className="text-lg font-serif text-slate-900 group-hover/item:text-orange-700 transition-colors truncate">{link.title}</h3>
-                      <span
-                        className={`px-3 py-1 text-xs font-sans font-semibold rounded-lg border ${getPlatformColor(link.platform)} capitalize flex-shrink-0`}
-                      >
-                        {link.platform}
-                      </span>
-                    </div>
-
-                    <div className="bg-orange-50/50 p-3 rounded-lg border border-orange-100 mb-4">
-                      <p className="text-xs text-stone-500 font-sans mb-1">Short Link:</p>
-                      <p className="text-sm text-slate-900 font-mono font-bold break-all">
-                        {typeof window !== 'undefined' ? `${window.location.origin}/l/${link.short_code}` : `app.postprofit.io/l/${link.short_code}`}
-                      </p>
-                    </div>
-
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                      <div className="bg-white p-3 rounded-lg border border-orange-100">
-                        <span className="text-stone-500 font-sans text-xs block mb-1">Clicks</span>
-                        <span className="font-sans font-bold text-slate-900 text-lg">
-                          {link.clicks || 0}
-                        </span>
-                      </div>
-                      <div className="bg-white p-3 rounded-lg border border-orange-100">
-                        <span className="text-stone-500 font-sans text-xs block mb-1">Revenue</span>
-                        <span className="font-sans font-bold text-slate-900 text-lg">
-                          ${parseFloat(link.total_revenue.toString()).toFixed(2)}
-                        </span>
-                      </div>
-                      <div className="bg-white p-3 rounded-lg border border-orange-100">
-                        <span className="text-stone-500 font-sans text-xs block mb-1">Conv. Rate</span>
-                        <span className="font-sans font-bold text-slate-900 text-lg">
-                          {link.clicks > 0 ? ((parseFloat(link.total_revenue.toString()) > 0 ? 1 : 0) / link.clicks * 100).toFixed(1) : '0.0'}%
-                        </span>
-                      </div>
-                      <div className="bg-white p-3 rounded-lg border border-orange-100">
-                        <span className="text-stone-500 font-sans text-xs block mb-1">Created</span>
-                        <span className="font-sans font-semibold text-slate-900 text-sm">
-                          {new Date(link.created_at).toLocaleDateString()}
-                        </span>
-                      </div>
-                    </div>
+                <div className="flex items-start gap-4">
+                  {/* Platform Icon */}
+                  <div
+                    className="platform-icon flex-shrink-0 mt-1"
+                    style={{ backgroundColor: config.bgColor }}
+                  >
+                    {config.icon}
                   </div>
 
-                  <div className="flex md:flex-col gap-2 flex-shrink-0">
-                    <button
-                      onClick={() => copyToClipboard(
-                        typeof window !== 'undefined' ? `${window.location.origin}/l/${link.short_code}` : `https://app.postprofit.io/l/${link.short_code}`,
-                        link.id
-                      )}
-                      className="flex-1 md:flex-none px-5 py-2.5 bg-gradient-to-r from-orange-500 to-rose-500 text-white font-sans font-semibold rounded-lg hover:shadow-lg hover:shadow-orange-500/30 transition-all duration-300 hover:scale-105 text-sm"
-                    >
-                      {copiedId === link.id ? '✓ Copied!' : 'Copy Link'}
-                    </button>
-                    <button
-                      onClick={() => deleteLink(link.id)}
-                      className="flex-1 md:flex-none px-5 py-2.5 bg-red-50 text-red-700 font-sans font-semibold rounded-lg border border-red-200 hover:bg-red-100 hover:border-red-300 transition-all duration-300 text-sm"
-                    >
-                      Delete
-                    </button>
+                  {/* Main Content */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-start justify-between gap-4 mb-3">
+                      <div>
+                        <h3 className="text-[var(--text-primary)] font-medium truncate">{link.title}</h3>
+                        <div className="flex items-center gap-2 mt-1">
+                          <span
+                            className="px-2 py-0.5 text-xs font-medium rounded-full"
+                            style={{ backgroundColor: config.bgColor, color: config.color }}
+                          >
+                            {config.label}
+                          </span>
+                          <span className="text-xs text-[var(--text-muted)]">
+                            {new Date(link.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Actions */}
+                      <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button
+                          onClick={() => copyToClipboard(shortLinkUrl, link.id)}
+                          className="px-3 py-1.5 bg-[var(--accent-green)] text-white text-xs font-medium rounded-lg hover:bg-[var(--accent-green)]/90 transition-colors"
+                        >
+                          {copiedId === link.id ? 'Copied!' : 'Copy'}
+                        </button>
+                        <button
+                          onClick={() => deleteLink(link.id)}
+                          className="p-1.5 text-[var(--text-muted)] hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                        >
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Short Link */}
+                    <div className="flex items-center gap-2 p-2 bg-[var(--bg-primary)] rounded-lg mb-3">
+                      <code className="text-xs text-[var(--text-secondary)] flex-1 truncate font-mono">
+                        {shortLinkUrl}
+                      </code>
+                      <button
+                        onClick={() => copyToClipboard(shortLinkUrl, link.id)}
+                        className="p-1 text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
+                      >
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                        </svg>
+                      </button>
+                    </div>
+
+                    {/* Stats */}
+                    <div className="flex items-center gap-6">
+                      <div>
+                        <p className="text-xs text-[var(--text-muted)] mb-0.5">Clicks</p>
+                        <p className="text-lg font-bold text-[var(--text-primary)]">{link.clicks || 0}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-[var(--text-muted)] mb-0.5">Revenue</p>
+                        <p className="text-lg font-bold text-[var(--accent-green)]">
+                          ${parseFloat(link.total_revenue.toString()).toFixed(2)}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-[var(--text-muted)] mb-0.5">$/Click</p>
+                        <p className="text-lg font-bold text-[var(--text-primary)]">
+                          ${link.clicks > 0 ? (parseFloat(link.total_revenue.toString()) / link.clicks).toFixed(2) : '0.00'}
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-            ))}
-          </div>
-        )}
-      </div>
+            )
+          })}
+        </div>
+      )}
     </div>
   )
 }

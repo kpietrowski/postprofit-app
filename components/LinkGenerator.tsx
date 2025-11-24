@@ -6,6 +6,14 @@ interface LinkGeneratorProps {
   onLinkCreated: () => void
 }
 
+const platformOptions = [
+  { value: 'instagram', label: 'Instagram' },
+  { value: 'tiktok', label: 'TikTok' },
+  { value: 'youtube', label: 'YouTube' },
+  { value: 'twitter', label: 'Twitter' },
+  { value: 'other', label: 'Other' },
+]
+
 export default function LinkGenerator({ onLinkCreated }: LinkGeneratorProps) {
   const [title, setTitle] = useState('')
   const [platform, setPlatform] = useState('instagram')
@@ -18,6 +26,7 @@ export default function LinkGenerator({ onLinkCreated }: LinkGeneratorProps) {
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
   const [generatedLink, setGeneratedLink] = useState<any>(null)
+  const [showUtm, setShowUtm] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -70,177 +79,205 @@ export default function LinkGenerator({ onLinkCreated }: LinkGeneratorProps) {
   const copyToClipboard = async (text: string) => {
     try {
       await navigator.clipboard.writeText(text)
-      alert('Link copied to clipboard!')
     } catch (err) {
       alert('Failed to copy link')
     }
   }
 
   return (
-    <div className="relative group h-full">
-      <div className="absolute inset-0 bg-gradient-to-br from-orange-200/20 to-rose-200/20 rounded-2xl blur-lg"></div>
-      <div className="relative bg-white/80 backdrop-blur-xl border border-orange-200 rounded-2xl p-8 hover:border-orange-300 hover:shadow-lg transition-all duration-300 h-full">
-        <div className="flex items-center gap-2 mb-2">
-          <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
-          <h2 className="text-2xl font-serif text-slate-900">Create Campaign Link</h2>
+    <div className="card p-6 h-full">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h2 className="text-lg font-bold text-[var(--text-primary)]">Create Campaign</h2>
+          <p className="text-sm text-[var(--text-muted)]">Generate a trackable link for your content</p>
         </div>
-        <p className="text-stone-600 font-sans text-sm mb-6">
-          Generate tracking links for ManyChat auto-replies or boosted posts
-        </p>
+        <div className="w-10 h-10 rounded-xl bg-[var(--accent-green-light)] flex items-center justify-center">
+          <svg className="w-5 h-5 text-[var(--accent-green)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+          </svg>
+        </div>
+      </div>
 
-        {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl font-sans">
-            {error}
+      {/* Error Message */}
+      {error && (
+        <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm">
+          {error}
+        </div>
+      )}
+
+      {/* Success Message */}
+      {success && generatedLink && (
+        <div className="mb-4 p-4 bg-[var(--accent-green-light)] border border-[var(--accent-green)]/20 rounded-xl">
+          <div className="flex items-center gap-2 mb-2">
+            <svg className="w-5 h-5 text-[var(--accent-green)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+            <p className="text-[var(--accent-green)] font-medium text-sm">Link created successfully!</p>
           </div>
-        )}
-
-        {success && generatedLink && (
-          <div className="mb-6 p-5 bg-green-50 border border-green-200 rounded-xl relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-green-100/50 rounded-full blur-2xl"></div>
-            <p className="text-green-700 font-sans font-semibold mb-2 relative">✓ Campaign link created!</p>
-            <p className="text-sm text-stone-600 font-sans mb-3 relative">Use this short link in your social media:</p>
-            <div className="bg-white p-4 rounded-lg border border-green-200 break-all relative mb-3">
-              <p className="text-lg font-mono text-slate-900 mb-3 font-bold">{generatedLink.short_link_url || `${window.location.origin}/l/${generatedLink.short_code}`}</p>
-              <button
-                onClick={() => copyToClipboard(generatedLink.short_link_url || `${window.location.origin}/l/${generatedLink.short_code}`)}
-                className="px-4 py-2 bg-gradient-to-r from-orange-500 to-rose-500 text-white font-sans font-semibold rounded-lg hover:shadow-lg hover:shadow-orange-500/30 transition-all duration-300 hover:scale-105"
-              >
-                Copy Short Link
-              </button>
-            </div>
-            <details className="text-xs text-stone-500 font-sans">
-              <summary className="cursor-pointer hover:text-stone-700">Show full tracking URL</summary>
-              <p className="mt-2 font-mono text-stone-600 break-all">{generatedLink.full_tracking_url}</p>
-            </details>
+          <div className="flex items-center gap-2 p-2 bg-white rounded-lg">
+            <code className="text-sm text-[var(--text-primary)] flex-1 truncate font-mono">
+              {generatedLink.short_link_url || `${typeof window !== 'undefined' ? window.location.origin : ''}/l/${generatedLink.short_code}`}
+            </code>
+            <button
+              onClick={() => copyToClipboard(generatedLink.short_link_url || `${window.location.origin}/l/${generatedLink.short_code}`)}
+              className="px-3 py-1.5 bg-[var(--accent-green)] text-white text-xs font-medium rounded-lg hover:bg-[var(--accent-green)]/90 transition-colors"
+            >
+              Copy
+            </button>
           </div>
-        )}
+        </div>
+      )}
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+      {/* Form */}
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Title & Platform Row */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider mb-2">
+              Content Title
+            </label>
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              required
+              className="w-full px-4 py-3 bg-[var(--bg-primary)] border border-[var(--border-light)] rounded-xl text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-green)] focus:ring-1 focus:ring-[var(--accent-green)] transition-all text-sm"
+              placeholder="Morning Routine Video"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider mb-2">
+              Platform
+            </label>
+            <select
+              value={platform}
+              onChange={(e) => setPlatform(e.target.value)}
+              className="w-full px-4 py-3 bg-[var(--bg-primary)] border border-[var(--border-light)] rounded-xl text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-green)] focus:ring-1 focus:ring-[var(--accent-green)] transition-all text-sm cursor-pointer"
+            >
+              {platformOptions.map(opt => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {/* Destination URL */}
+        <div>
+          <label className="block text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider mb-2">
+            Destination URL
+          </label>
+          <input
+            type="url"
+            value={destinationUrl}
+            onChange={(e) => setDestinationUrl(e.target.value)}
+            required
+            className="w-full px-4 py-3 bg-[var(--bg-primary)] border border-[var(--border-light)] rounded-xl text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-green)] focus:ring-1 focus:ring-[var(--accent-green)] transition-all text-sm"
+            placeholder="https://yourwebsite.com"
+          />
+          <p className="mt-1.5 text-xs text-[var(--text-muted)]">
+            Your domain with the tracking snippet installed
+          </p>
+        </div>
+
+        {/* UTM Toggle */}
+        <button
+          type="button"
+          onClick={() => setShowUtm(!showUtm)}
+          className="flex items-center gap-2 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+        >
+          <svg
+            className={`w-4 h-4 transition-transform ${showUtm ? 'rotate-90' : ''}`}
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+          UTM Parameters (Optional)
+        </button>
+
+        {/* UTM Fields */}
+        {showUtm && (
+          <div className="grid grid-cols-2 gap-4 p-4 bg-[var(--bg-primary)] rounded-xl border border-[var(--border-light)]">
             <div>
-              <label htmlFor="title" className="block text-sm font-sans font-semibold text-stone-700 mb-2 tracking-wide uppercase text-xs">
-                Content Title *
+              <label className="block text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider mb-2">
+                UTM Source
               </label>
               <input
-                id="title"
                 type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                required
-                className="w-full px-4 py-3 bg-white border border-orange-200 rounded-lg font-sans text-slate-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 transition-all"
-                placeholder="Morning Routine Video"
+                value={utmSource}
+                onChange={(e) => setUtmSource(e.target.value)}
+                className="w-full px-3 py-2 bg-white border border-[var(--border-light)] rounded-lg text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-green)] transition-all text-sm"
+                placeholder="Auto from platform"
               />
             </div>
 
             <div>
-              <label htmlFor="platform" className="block text-sm font-sans font-semibold text-stone-700 mb-2 tracking-wide uppercase text-xs">
-                Platform *
+              <label className="block text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider mb-2">
+                UTM Medium
               </label>
-              <select
-                id="platform"
-                value={platform}
-                onChange={(e) => setPlatform(e.target.value)}
-                required
-                className="w-full px-4 py-3 bg-white border border-orange-200 rounded-lg font-sans text-stone-800 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 transition-all"
-              >
-                <option value="instagram">Instagram</option>
-                <option value="tiktok">TikTok</option>
-                <option value="youtube">YouTube</option>
-                <option value="twitter">Twitter</option>
-                <option value="other">Other</option>
-              </select>
+              <input
+                type="text"
+                value={utmMedium}
+                onChange={(e) => setUtmMedium(e.target.value)}
+                className="w-full px-3 py-2 bg-white border border-[var(--border-light)] rounded-lg text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-green)] transition-all text-sm"
+                placeholder="social"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider mb-2">
+                UTM Campaign
+              </label>
+              <input
+                type="text"
+                value={utmCampaign}
+                onChange={(e) => setUtmCampaign(e.target.value)}
+                className="w-full px-3 py-2 bg-white border border-[var(--border-light)] rounded-lg text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-green)] transition-all text-sm"
+                placeholder="Auto from title"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider mb-2">
+                UTM Content
+              </label>
+              <input
+                type="text"
+                value={utmContent}
+                onChange={(e) => setUtmContent(e.target.value)}
+                className="w-full px-3 py-2 bg-white border border-[var(--border-light)] rounded-lg text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-green)] transition-all text-sm"
+                placeholder="Optional"
+              />
             </div>
           </div>
+        )}
 
-          <div>
-            <label htmlFor="destinationUrl" className="block text-sm font-sans font-semibold text-stone-700 mb-2 tracking-wide uppercase text-xs">
-              Your Website URL *
-            </label>
-            <input
-              id="destinationUrl"
-              type="url"
-              value={destinationUrl}
-              onChange={(e) => setDestinationUrl(e.target.value)}
-              required
-              className="w-full px-4 py-3 bg-white border border-orange-200 rounded-lg font-sans text-stone-800 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 transition-all"
-              placeholder="https://weddings.chatoptimized.io"
-            />
-            <p className="mt-2 text-xs text-stone-500 font-sans">
-              This must be YOUR domain where you have the tracking snippet installed
-            </p>
-          </div>
-
-          <div className="border-t border-orange-200 pt-5">
-            <h3 className="text-lg font-serif text-slate-900 mb-4">UTM Parameters <span className="text-stone-500 text-sm font-sans">(Optional)</span></h3>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="utmSource" className="block text-sm font-sans font-semibold text-stone-700 mb-2 tracking-wide uppercase text-xs">
-                  UTM Source
-                </label>
-                <input
-                  id="utmSource"
-                  type="text"
-                  value={utmSource}
-                  onChange={(e) => setUtmSource(e.target.value)}
-                  className="w-full px-4 py-3 bg-white border border-orange-200 rounded-lg font-sans text-slate-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 transition-all"
-                  placeholder="Auto-filled from platform"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="utmMedium" className="block text-sm font-sans font-semibold text-stone-700 mb-2 tracking-wide uppercase text-xs">
-                  UTM Medium
-                </label>
-                <input
-                  id="utmMedium"
-                  type="text"
-                  value={utmMedium}
-                  onChange={(e) => setUtmMedium(e.target.value)}
-                  className="w-full px-4 py-3 bg-white border border-orange-200 rounded-lg font-sans text-slate-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 transition-all"
-                  placeholder="social"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="utmCampaign" className="block text-sm font-sans font-semibold text-stone-700 mb-2 tracking-wide uppercase text-xs">
-                  UTM Campaign
-                </label>
-                <input
-                  id="utmCampaign"
-                  type="text"
-                  value={utmCampaign}
-                  onChange={(e) => setUtmCampaign(e.target.value)}
-                  className="w-full px-4 py-3 bg-white border border-orange-200 rounded-lg font-sans text-slate-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 transition-all"
-                  placeholder="Auto-filled from title"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="utmContent" className="block text-sm font-sans font-semibold text-stone-700 mb-2 tracking-wide uppercase text-xs">
-                  UTM Content
-                </label>
-                <input
-                  id="utmContent"
-                  type="text"
-                  value={utmContent}
-                  onChange={(e) => setUtmContent(e.target.value)}
-                  className="w-full px-4 py-3 bg-white border border-orange-200 rounded-lg font-sans text-slate-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 transition-all"
-                  placeholder="Optional"
-                />
-              </div>
-            </div>
-          </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full py-4 bg-gradient-to-r from-orange-500 to-rose-500 text-white font-sans font-bold rounded-lg hover:shadow-xl hover:shadow-orange-500/30 transition-all duration-300 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-none"
-          >
-            {loading ? 'Creating...' : 'Generate Tracking Link'}
-          </button>
-        </form>
-      </div>
+        {/* Submit Button */}
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full py-3.5 bg-[var(--accent-green)] text-white font-medium rounded-xl hover:bg-[var(--accent-green)]/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+        >
+          {loading ? (
+            <>
+              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+              Creating...
+            </>
+          ) : (
+            <>
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+              Generate Link
+            </>
+          )}
+        </button>
+      </form>
     </div>
   )
 }
