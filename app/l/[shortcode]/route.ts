@@ -26,14 +26,14 @@ export async function GET(
     }
 
     // Increment click count (fire and forget for speed)
-    supabase
+    void supabase
       .from('tracking_links')
       .update({ clicks: (trackingLink.clicks || 0) + 1 })
       .eq('id', trackingLink.id)
       .then(() => {
         console.log(`[Click Tracking] Incremented clicks for ${shortcode}`)
       })
-      .catch((err) => {
+      .catch((err: unknown) => {
         console.error(`[Click Tracking] Error incrementing clicks:`, err)
       })
 
