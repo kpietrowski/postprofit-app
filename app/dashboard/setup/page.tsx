@@ -143,7 +143,7 @@ export default function SetupPage() {
                 <div>
                   <div className="p-4 bg-[var(--accent-green-light)] border border-[var(--accent-green)]/20 rounded-xl mb-4">
                     <p className="text-[var(--accent-green)] text-sm font-medium">
-                      Copy this key now - you won't see it again!
+                      Copy this key now - you won&apos;t see it again!
                     </p>
                   </div>
                   <div className="flex items-center gap-3 p-3 bg-[var(--bg-primary)] rounded-xl">
@@ -189,7 +189,7 @@ export default function SetupPage() {
               <div className="mt-4 p-4 bg-[var(--bg-primary)] rounded-xl">
                 <p className="text-sm font-medium text-[var(--text-primary)] mb-2">Where to paste:</p>
                 <ul className="text-sm text-[var(--text-secondary)] space-y-1">
-                  <li>WordPress: Theme footer or "Insert Headers and Footers" plugin</li>
+                  <li>WordPress: Theme footer or &quot;Insert Headers and Footers&quot; plugin</li>
                   <li>Shopify: Theme → Edit code → theme.liquid</li>
                   <li>Webflow: Project Settings → Custom Code → Footer</li>
                 </ul>
