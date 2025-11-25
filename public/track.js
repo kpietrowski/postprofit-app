@@ -1,22 +1,25 @@
 /**
- * Revenue Tracking SDK
- * Captures UTM parameters and tracks purchases
+ * PostProfit Revenue Tracking SDK
+ * Captures UTM parameters and tracks purchases automatically
+ *
+ * Usage: Add this to your website before </body>
+ * <script src="https://app.postprofit.io/track.js" data-api-key="YOUR_API_KEY"></script>
  */
 
 (function() {
   'use strict';
 
   // Configuration
-  const COOKIE_NAME = 'revenue_campaign';
+  const COOKIE_NAME = 'pp_campaign';
   const COOKIE_EXPIRY_DAYS = 30;
-  const API_ENDPOINT = window.location.origin + '/api/v1/track';
+  const API_BASE = 'https://app.postprofit.io';
 
   // Get API key from script tag
   const scriptTag = document.currentScript || document.querySelector('script[data-api-key]');
   const API_KEY = scriptTag ? scriptTag.getAttribute('data-api-key') : null;
 
   if (!API_KEY) {
-    console.warn('[RevenueTracker] No API key found. Add data-api-key attribute to script tag.');
+    console.warn('[PostProfit] No API key found. Add data-api-key attribute to script tag.');
     return;
   }
 
@@ -29,30 +32,45 @@
 
     // Standard UTM parameters
     const utmKeys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
-    utmKeys.forEach(key => {
+    utmKeys.forEach(function(key) {
       const value = params.get(key);
       if (value) utm[key] = value;
     });
 
-    // Custom campaign parameter
-    const campaign = params.get('c') || params.get('campaign');
-    if (campaign) utm.campaign_id = campaign;
+    // Also check for ref parameter (common shorthand)
+    const ref = params.get('ref');
+    if (ref && !utm.utm_source) utm.utm_source = ref;
 
     return Object.keys(utm).length > 0 ? utm : null;
   }
 
   /**
-   * Set cookie
+   * Set cookie with cross-subdomain support
    */
   function setCookie(name, value, days) {
     const date = new Date();
     date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
     const expires = 'expires=' + date.toUTCString();
-    document.cookie = name + '=' + JSON.stringify(value) + ';' + expires + ';path=/;SameSite=Lax';
+
+    // Get root domain for cross-subdomain tracking
+    const domain = getRootDomain();
+    const domainStr = domain ? ';domain=' + domain : '';
+
+    document.cookie = name + '=' + encodeURIComponent(JSON.stringify(value)) + ';' + expires + ';path=/' + domainStr + ';SameSite=Lax';
   }
 
   /**
-   * Get cookie
+   * Get root domain (e.g., example.com from www.example.com)
+   */
+  function getRootDomain() {
+    const hostname = window.location.hostname;
+    const parts = hostname.split('.');
+    if (parts.length <= 2) return hostname;
+    return '.' + parts.slice(-2).join('.');
+  }
+
+  /**
+   * Get cookie value
    */
   function getCookie(name) {
     const nameEQ = name + '=';
@@ -62,7 +80,7 @@
       while (c.charAt(0) === ' ') c = c.substring(1, c.length);
       if (c.indexOf(nameEQ) === 0) {
         try {
-          return JSON.parse(c.substring(nameEQ.length, c.length));
+          return JSON.parse(decodeURIComponent(c.substring(nameEQ.length, c.length)));
         } catch (e) {
           return null;
         }
@@ -72,39 +90,141 @@
   }
 
   /**
-   * Track purchase event
+   * Send tracking data to PostProfit
    */
-  function trackPurchase(data) {
-    const campaignData = getCookie(COOKIE_NAME);
-
-    if (!campaignData) {
-      console.warn('[RevenueTracker] No campaign data found in cookie');
-      return Promise.resolve();
-    }
-
-    const payload = {
-      ...campaignData,
-      amount: data.amount,
-      customer_id: data.customer_id || null,
-      metadata: data.metadata || {},
-      timestamp: new Date().toISOString()
-    };
-
-    return fetch(API_ENDPOINT + '/purchase', {
+  function sendToAPI(endpoint, data) {
+    return fetch(API_BASE + endpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + API_KEY
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(data)
     })
-    .then(response => {
-      if (!response.ok) throw new Error('Failed to track purchase');
-      console.log('[RevenueTracker] Purchase tracked successfully');
+    .then(function(response) {
+      if (!response.ok) {
+        return response.json().then(function(err) {
+          throw new Error(err.error || 'API request failed');
+        });
+      }
       return response.json();
-    })
-    .catch(error => {
-      console.error('[RevenueTracker] Error tracking purchase:', error);
+    });
+  }
+
+  /**
+   * Track a purchase - call this when a purchase is confirmed
+   * @param {object} data - { amount: number, order_id?: string, customer_email?: string }
+   */
+  function trackPurchase(data) {
+    const campaignData = getCookie(COOKIE_NAME);
+
+    if (!campaignData) {
+      console.warn('[PostProfit] No campaign data found - visitor may not have come from a tracked link');
+      return Promise.resolve({ tracked: false, reason: 'no_campaign' });
+    }
+
+    if (!data || !data.amount) {
+      console.error('[PostProfit] Amount is required for tracking');
+      return Promise.reject(new Error('Amount is required'));
+    }
+
+    const payload = {
+      utm_source: campaignData.utm_source,
+      utm_medium: campaignData.utm_medium,
+      utm_campaign: campaignData.utm_campaign,
+      utm_content: campaignData.utm_content,
+      utm_term: campaignData.utm_term,
+      amount: parseFloat(data.amount),
+      metadata: {
+        order_id: data.order_id || null,
+        customer_email: data.customer_email || null,
+        page_url: window.location.href,
+        referrer: document.referrer
+      }
+    };
+
+    return sendToAPI('/api/v1/track/purchase', payload)
+      .then(function(result) {
+        console.log('[PostProfit] Purchase tracked:', result);
+        return result;
+      })
+      .catch(function(error) {
+        console.error('[PostProfit] Error tracking purchase:', error);
+        throw error;
+      });
+  }
+
+  /**
+   * Get current campaign data (useful for passing to checkout)
+   */
+  function getCampaign() {
+    return getCookie(COOKIE_NAME);
+  }
+
+  /**
+   * Get campaign data as URL params (for appending to checkout URLs)
+   */
+  function getCampaignParams() {
+    const campaign = getCookie(COOKIE_NAME);
+    if (!campaign) return '';
+
+    const params = new URLSearchParams();
+    Object.keys(campaign).forEach(function(key) {
+      if (campaign[key]) params.append(key, campaign[key]);
+    });
+    return params.toString();
+  }
+
+  /**
+   * Automatically detect and track Stripe checkout success pages
+   */
+  function autoDetectStripeSuccess() {
+    // Check if this is a Stripe success redirect
+    const params = new URLSearchParams(window.location.search);
+    const sessionId = params.get('session_id');
+
+    if (sessionId && window.location.pathname.includes('success')) {
+      // This looks like a Stripe checkout success page
+      // The actual tracking happens via Stripe webhook, but log for debugging
+      console.log('[PostProfit] Stripe checkout success detected - revenue will be tracked via webhook');
+    }
+  }
+
+  /**
+   * Hook into common checkout flows
+   */
+  function setupCheckoutHooks() {
+    // Watch for Stripe Checkout redirects
+    const originalWindowOpen = window.open;
+    window.open = function(url) {
+      if (url && typeof url === 'string' && url.includes('checkout.stripe.com')) {
+        // Append campaign params to Stripe checkout URL if possible
+        const campaign = getCookie(COOKIE_NAME);
+        if (campaign) {
+          console.log('[PostProfit] Stripe checkout detected with campaign:', campaign);
+        }
+      }
+      return originalWindowOpen.apply(this, arguments);
+    };
+
+    // Watch for form submissions to checkout
+    document.addEventListener('submit', function(e) {
+      const form = e.target;
+      if (form.action && (form.action.includes('checkout') || form.action.includes('stripe'))) {
+        // Add hidden fields for campaign data
+        const campaign = getCookie(COOKIE_NAME);
+        if (campaign) {
+          Object.keys(campaign).forEach(function(key) {
+            if (campaign[key] && !form.querySelector('input[name="' + key + '"]')) {
+              const input = document.createElement('input');
+              input.type = 'hidden';
+              input.name = key;
+              input.value = campaign[key];
+              form.appendChild(input);
+            }
+          });
+        }
+      }
     });
   }
 
@@ -112,46 +232,35 @@
    * Initialize tracking
    */
   function init() {
-    // Capture UTM parameters if present
+    // Capture UTM parameters if present in URL
     const utmParams = getUTMParams();
     if (utmParams) {
-      setCookie(COOKIE_NAME, utmParams, COOKIE_EXPIRY_DAYS);
-      console.log('[RevenueTracker] Campaign parameters captured:', utmParams);
+      // Merge with existing cookie (don't overwrite if already tracking)
+      const existing = getCookie(COOKIE_NAME);
+      const merged = Object.assign({}, existing || {}, utmParams, {
+        first_seen: existing ? existing.first_seen : new Date().toISOString(),
+        last_seen: new Date().toISOString()
+      });
+      setCookie(COOKIE_NAME, merged, COOKIE_EXPIRY_DAYS);
+      console.log('[PostProfit] Campaign captured:', merged);
     }
 
-    // Expose trackPurchase to global scope
-    window.RevenueTracker = {
+    // Setup checkout detection
+    setupCheckoutHooks();
+    autoDetectStripeSuccess();
+
+    // Expose public API
+    window.PostProfit = {
       trackPurchase: trackPurchase,
-      getCampaign: function() {
-        return getCookie(COOKIE_NAME);
-      }
+      getCampaign: getCampaign,
+      getCampaignParams: getCampaignParams,
+      version: '2.0.0'
     };
 
-    // Auto-track if Stripe is present
-    if (window.Stripe) {
-      interceptStripe();
-    }
+    // Legacy support
+    window.RevenueTracker = window.PostProfit;
 
-    console.log('[RevenueTracker] Initialized');
-  }
-
-  /**
-   * Intercept Stripe checkout to add metadata
-   */
-  function interceptStripe() {
-    const campaignData = getCookie(COOKIE_NAME);
-    if (!campaignData) return;
-
-    // Hook into Stripe.redirectToCheckout if available
-    if (window.Stripe && window.Stripe.redirectToCheckout) {
-      const originalRedirect = window.Stripe.redirectToCheckout;
-      window.Stripe.redirectToCheckout = function(options) {
-        // Add campaign data to metadata
-        options.metadata = options.metadata || {};
-        Object.assign(options.metadata, campaignData);
-        return originalRedirect.call(this, options);
-      };
-    }
+    console.log('[PostProfit] Tracking initialized');
   }
 
   // Initialize when DOM is ready
