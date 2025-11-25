@@ -50,6 +50,7 @@ export default function LinksList() {
   const [links, setLinks] = useState<TrackingLink[]>([])
   const [loading, setLoading] = useState(true)
   const [copiedId, setCopiedId] = useState<string | null>(null)
+  const [copiedType, setCopiedType] = useState<'short' | 'full' | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [platformFilter, setPlatformFilter] = useState<string>('all')
 
@@ -71,11 +72,15 @@ export default function LinksList() {
     }
   }
 
-  const copyToClipboard = async (text: string, id: string) => {
+  const copyToClipboard = async (text: string, id: string, type: 'short' | 'full') => {
     try {
       await navigator.clipboard.writeText(text)
       setCopiedId(id)
-      setTimeout(() => setCopiedId(null), 2000)
+      setCopiedType(type)
+      setTimeout(() => {
+        setCopiedId(null)
+        setCopiedType(null)
+      }, 2000)
     } catch (err) {
       alert('Failed to copy link')
     }
@@ -218,16 +223,10 @@ export default function LinksList() {
                       </div>
 
                       {/* Actions */}
-                      <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button
-                          onClick={() => copyToClipboard(shortLinkUrl, link.id)}
-                          className="px-3 py-1.5 bg-[var(--accent-green)] text-white text-xs font-medium rounded-lg hover:bg-[var(--accent-green)]/90 transition-colors"
-                        >
-                          {copiedId === link.id ? 'Copied!' : 'Copy'}
-                        </button>
+                      <div className="flex items-center gap-1">
                         <button
                           onClick={() => deleteLink(link.id)}
-                          className="p-1.5 text-[var(--text-muted)] hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                          className="p-1.5 text-[var(--text-muted)] hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
                         >
                           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -236,19 +235,39 @@ export default function LinksList() {
                       </div>
                     </div>
 
-                    {/* Short Link */}
-                    <div className="flex items-center gap-2 p-2 bg-[var(--bg-primary)] rounded-lg mb-3">
-                      <code className="text-xs text-[var(--text-secondary)] flex-1 truncate font-mono">
-                        {shortLinkUrl}
-                      </code>
-                      <button
-                        onClick={() => copyToClipboard(shortLinkUrl, link.id)}
-                        className="p-1 text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
-                      >
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                        </svg>
-                      </button>
+                    {/* Link Options */}
+                    <div className="space-y-2 mb-3">
+                      {/* Short Link - for ManyChat/DMs */}
+                      <div className="flex items-center gap-2 p-2 bg-[var(--bg-primary)] rounded-lg">
+                        <div className="flex-1 min-w-0">
+                          <p className="text-[10px] text-[var(--text-muted)] uppercase tracking-wider mb-0.5">Short Link (for ManyChat/DMs)</p>
+                          <code className="text-xs text-[var(--text-secondary)] truncate font-mono block">
+                            {shortLinkUrl}
+                          </code>
+                        </div>
+                        <button
+                          onClick={() => copyToClipboard(shortLinkUrl, link.id, 'short')}
+                          className="px-3 py-1.5 bg-[var(--accent-green)] text-white text-xs font-medium rounded-lg hover:bg-[var(--accent-green)]/90 transition-colors flex-shrink-0"
+                        >
+                          {copiedId === link.id && copiedType === 'short' ? 'Copied!' : 'Copy'}
+                        </button>
+                      </div>
+
+                      {/* Full URL - for Ads */}
+                      <div className="flex items-center gap-2 p-2 bg-[var(--bg-primary)] rounded-lg">
+                        <div className="flex-1 min-w-0">
+                          <p className="text-[10px] text-[var(--text-muted)] uppercase tracking-wider mb-0.5">Full URL (for Ads Manager)</p>
+                          <code className="text-xs text-[var(--text-secondary)] truncate font-mono block">
+                            {link.full_tracking_url}
+                          </code>
+                        </div>
+                        <button
+                          onClick={() => copyToClipboard(link.full_tracking_url, link.id, 'full')}
+                          className="px-3 py-1.5 bg-[var(--accent-purple)] text-white text-xs font-medium rounded-lg hover:bg-[var(--accent-purple)]/90 transition-colors flex-shrink-0"
+                        >
+                          {copiedId === link.id && copiedType === 'full' ? 'Copied!' : 'Copy'}
+                        </button>
+                      </div>
                     </div>
 
                     {/* Stats */}
